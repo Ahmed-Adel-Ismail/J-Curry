@@ -1,11 +1,13 @@
 # J-Curry
 a library that enables Currying functions in Java (using RxJava2 interfaces), compatible with Java 6, 7 and 8
 
-to curry any function you will need to call Curry.apply()
+# What is Currying
+
+a small video that explains Currying : https://www.youtube.com/watch?v=iZLP4qOwY8I&feature=youtu.be
 
 # Curry.apply(function,firstParameter)
 
-The apply method will return another function that takes the next parameter and be executed later.
+To curry any function you will need to call Curry.apply(), the apply method will return another function that takes the next parameter and be executed later.
 A sample example for a logging function is as follows :
 
     public class MainActivity extends AppCompatActivity
