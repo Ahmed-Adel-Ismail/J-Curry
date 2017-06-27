@@ -5,28 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.functional.curry.Curry;
+import com.functional.curry.RxConsumer;
 
 import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity
 {
 
-    private final Consumer<String> log = Curry.apply(debugLog(), "MainActivity");
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        log.accept("onCreate()");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        log.accept("onStart()");
-    }
-
+    private final RxConsumer<String> log = Curry.apply(debugLog(), "MainActivity");
 
     /**
      * a function that logs debug messages, can be declared in another class
@@ -41,6 +27,13 @@ public class MainActivity extends AppCompatActivity
                 Log.d(tag, message);
             }
         };
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        log.accept("onCreate()");
     }
 
 }
