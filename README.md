@@ -87,6 +87,13 @@ the method's Signature, those interfaces are (RxConsumer, RxFunction, RxPredicat
     
     }
     
+so what happened to the thrown Exception ?
+
+    Curried functions does not throw exceptions other than {@link RuntimeException},
+    if there execution method threw an {@link Exception}, it will be wrapped in a
+    {@link RuntimeException}, else it will throw the sub-class of the {@link RuntimeException} that
+    was already thrown by the executing function    
+    
 # Usage with RxJava2 Operators
 
 The greatest benefit from such library is to use with RxJava2 operators, since it uses the RxJava interfaces (Consumer, Function, Predicate).
