@@ -23,7 +23,12 @@ import io.reactivex.functions.Predicate;
  * if there execution method threw an {@link Exception}, it will be wrapped in a
  * {@link RuntimeException}, else it will throw the sub-class of the {@link RuntimeException} that
  * was already thrown by the executing function ... this is to avoid the {@code try/catch} clauses
- * every where
+ * every where, you can use the non-throwing versions of the functional interfaces to benefit from
+ * this behavior, like :
+ * <p>
+ * {@link RxFunction}<br>
+ * {@link RxConsumer}<br>
+ * {@link RxPredicate}<br>
  * <p>
  * Created by Ahmed Adel Ismail on 6/27/2017.
  */
@@ -40,7 +45,7 @@ public class Curry
      * @return the {@link Function} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne, ParameterTwo, Return> Function<ParameterTwo, Return>
+    public static <ParameterOne, ParameterTwo, Return> RxFunction<ParameterTwo, Return>
     apply(BiFunction<ParameterOne, ParameterTwo, Return> function, ParameterOne parameterOne) {
         return new CurriedBiFunction<>(function, parameterOne);
     }
@@ -73,7 +78,7 @@ public class Curry
      * @return the {@link Consumer} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne, ParameterTwo> Consumer<ParameterTwo>
+    public static <ParameterOne, ParameterTwo> RxConsumer<ParameterTwo>
     apply(BiConsumer<ParameterOne, ParameterTwo> consumer, ParameterOne parameterOne) {
         return new CurriedBiConsumer<>(consumer, parameterOne);
     }
@@ -90,7 +95,7 @@ public class Curry
      * later and be executed
      */
 
-    public static <ParameterOne, ParameterTwo> Predicate<ParameterTwo>
+    public static <ParameterOne, ParameterTwo> RxPredicate<ParameterTwo>
     apply(BiPredicate<ParameterOne, ParameterTwo> predicate, ParameterOne parameterOne) {
         return new CurriedBiPredicate<>(predicate, parameterOne);
     }

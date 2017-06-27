@@ -3,14 +3,13 @@ package com.functional.curry;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiPredicate;
-import io.reactivex.functions.Predicate;
 
 /**
  * a CurriedFunction {@link BiPredicate}
  *
  * Created by Ahmed Adel Ismail on 6/26/2017.
  */
-class CurriedBiPredicate<ParameterOne, ParameterTwo> implements Predicate<ParameterTwo>
+class CurriedBiPredicate<ParameterOne, ParameterTwo> implements RxPredicate<ParameterTwo>
 {
     private final BiPredicate<ParameterOne, ParameterTwo> biPredicate;
     private final ParameterOne parameterOne;

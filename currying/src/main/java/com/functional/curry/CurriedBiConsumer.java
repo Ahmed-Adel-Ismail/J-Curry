@@ -2,7 +2,6 @@ package com.functional.curry;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.Consumer;
 
 /**
  * a curried {@link BiConsumer}
@@ -10,7 +9,7 @@ import io.reactivex.functions.Consumer;
  * Created by Ahmed Adel Ismail on 6/26/2017.
  */
 class CurriedBiConsumer<ParameterOne, ParameterTwo>
-        implements Consumer<ParameterTwo>
+        implements RxConsumer<ParameterTwo>
 {
     private final BiConsumer<ParameterOne, ParameterTwo> biConsumer;
     private final ParameterOne parameterOne;

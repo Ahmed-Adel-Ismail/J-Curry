@@ -2,7 +2,6 @@ package com.functional.curry;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Function;
 
 /**
  * a CurriedFunction {@link BiFunction}
@@ -10,7 +9,7 @@ import io.reactivex.functions.Function;
  * Created by Ahmed Adel Ismail on 6/26/2017.
  */
 class CurriedBiFunction<ParameterOne, ParameterTwo, Return>
-        implements Function<ParameterTwo, Return>
+        implements RxFunction<ParameterTwo, Return>
 {
     private final BiFunction<ParameterOne, ParameterTwo, Return> biFunction;
     private final ParameterOne parameterOne;

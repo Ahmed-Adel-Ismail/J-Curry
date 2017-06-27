@@ -1,7 +1,6 @@
 package com.functional.curry;
 
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import io.reactivex.functions.Function3;
 
 /**
@@ -9,7 +8,7 @@ import io.reactivex.functions.Function3;
  * <p>
  * Created by Ahmed Adel Ismail on 6/26/2017.
  */
-class CurriedFunc3<T1, T2, T3, R> implements Function<T3, R>
+class CurriedFunc3<T1, T2, T3, R> implements RxFunction<T3, R>
 {
     private final boolean executable;
     private final Function3<T1, T2, T3, R> function3;
@@ -60,7 +59,7 @@ class CurriedFunc3<T1, T2, T3, R> implements Function<T3, R>
         return new CurriedFunction<T2, T3, R>()
         {
             @Override
-            public Function<T3, R> apply(@NonNull T2 parameterTwo) {
+            public RxFunction<T3, R> apply(@NonNull T2 parameterTwo) {
                 return new CurriedFunc3<>(function3, parameterOne, parameterTwo);
             }
         };
