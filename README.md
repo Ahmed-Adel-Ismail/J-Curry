@@ -1,5 +1,5 @@
 # J-Curry
-A library that enables Currying functions in Java (using RxJava2 interfaces), compatible with Java 6, 7 and 8
+A library that enables Currying functions in Java (using RxJava2 interfaces), compatible with Java 6 and 7
 
 # What is Currying
 
