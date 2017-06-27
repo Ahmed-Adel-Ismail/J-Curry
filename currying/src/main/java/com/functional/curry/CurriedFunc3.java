@@ -32,7 +32,16 @@ class CurriedFunc3<T1, T2, T3, R> implements Function<T3, R>
     }
 
     @Override
-    public R apply(@NonNull T3 parameterThree) throws Exception {
+    public R apply(@NonNull T3 parameterThree) {
+        try {
+            return doApply(parameterThree);
+        }
+        catch (Throwable e) {
+            throw new RuntimeExceptionConverter().apply(e);
+        }
+    }
+
+    private R doApply(@NonNull T3 parameterThree) throws Exception {
         if (executable) {
             return function3.apply(parameterOne, parameterTwo, parameterThree);
         }

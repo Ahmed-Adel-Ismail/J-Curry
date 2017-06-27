@@ -22,7 +22,12 @@ class CurriedBiConsumer<ParameterOne, ParameterTwo>
     }
 
     @Override
-    public void accept(@NonNull ParameterTwo parameterTwo) throws Exception {
-        biConsumer.accept(parameterOne, parameterTwo);
+    public void accept(@NonNull ParameterTwo parameterTwo) {
+        try {
+            biConsumer.accept(parameterOne, parameterTwo);
+        }
+        catch (Throwable e) {
+            throw new RuntimeExceptionConverter().apply(e);
+        }
     }
 }

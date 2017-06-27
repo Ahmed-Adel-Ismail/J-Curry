@@ -8,6 +8,25 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Function3;
 import io.reactivex.functions.Predicate;
 
+/**
+ * a class that curries any function with multiple parameters, there are multiple
+ * {@code apply()} methods for multiple function types, the supplied types are
+ * <p>
+ * {@link BiConsumer}<br>
+ * {@link BiPredicate}<br>
+ * {@link BiFunction}<br>
+ * {@link Function3}<br>
+ * <p>
+ * all of those types are the {@code RxJava} types, not {@code Java 8}
+ * <p>
+ * notice that curried functions does not throw exceptions other than {@link RuntimeException},
+ * if there execution method threw an {@link Exception}, it will be wrapped in a
+ * {@link RuntimeException}, else it will throw the sub-class of the {@link RuntimeException} that
+ * was already thrown by the executing function ... this is to avoid the {@code try/catch} clauses
+ * every where
+ * <p>
+ * Created by Ahmed Adel Ismail on 6/27/2017.
+ */
 public class Curry
 {
     /**

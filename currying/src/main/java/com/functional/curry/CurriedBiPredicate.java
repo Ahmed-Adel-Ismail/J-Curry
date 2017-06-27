@@ -23,7 +23,12 @@ class CurriedBiPredicate<ParameterOne, ParameterTwo> implements Predicate<Parame
 
 
     @Override
-    public boolean test(@NonNull ParameterTwo parameterTwo) throws Exception {
-        return biPredicate.test(parameterOne, parameterTwo);
+    public boolean test(@NonNull ParameterTwo parameterTwo) {
+        try {
+            return biPredicate.test(parameterOne, parameterTwo);
+        }
+        catch (Throwable e) {
+            throw new RuntimeExceptionConverter().apply(e);
+        }
     }
 }

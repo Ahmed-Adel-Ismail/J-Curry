@@ -123,4 +123,26 @@ public class CurryTest
             }
         };
     }
+
+    @Test(expected = RuntimeException.class)
+    public void throwNonRuntimeException_WrapInRuntimeException() throws Exception{
+        Curry.apply(new BiConsumer<Integer, Integer>()
+        {
+            @Override
+            public void accept(Integer integer, Integer integer2) throws Exception {
+                throw new Exception();
+            }
+        },10).accept(0);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void throwRuntimeException_DelegateTheException() throws Exception{
+        Curry.apply(new BiConsumer<Integer, Integer>()
+        {
+            @Override
+            public void accept(Integer integer, Integer integer2) throws Exception {
+                throw new UnsupportedOperationException();
+            }
+        },10).accept(0);
+    }
 }

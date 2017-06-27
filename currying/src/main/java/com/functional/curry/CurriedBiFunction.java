@@ -22,7 +22,12 @@ class CurriedBiFunction<ParameterOne, ParameterTwo, Return>
     }
 
     @Override
-    public Return apply(@NonNull ParameterTwo parameterTwo) throws Exception {
-        return biFunction.apply(parameterOne, parameterTwo);
+    public Return apply(@NonNull ParameterTwo parameterTwo) {
+        try {
+            return biFunction.apply(parameterOne, parameterTwo);
+        }
+        catch (Throwable e) {
+            throw new RuntimeExceptionConverter().apply(e);
+        }
     }
 }
