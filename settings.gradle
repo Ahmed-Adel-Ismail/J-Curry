@@ -1,1 +1,1 @@
-include ':currying'
+include ':currying', ':myapplication'
