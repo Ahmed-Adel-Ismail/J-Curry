@@ -34,6 +34,16 @@ public class CurryTest
     }
 
     @Test
+    public void toFunctionInMapOperator() throws Exception {
+        List<Integer> integers = Observable.fromArray(1, 2)
+                .map(Curry.toFunction(sumFunction(), 10))
+                .toList().blockingGet();
+
+        assertTrue(integers.get(0).equals(11) && integers.get(1).equals(12));
+
+    }
+
+    @Test
     public void useCurriedBiFunctionInLocalVariableInMapOperator() throws Exception {
 
         Function<Integer, Integer> sumWith10 = Curry.apply(sumFunction(), 10);
@@ -80,6 +90,15 @@ public class CurryTest
         assertTrue(evens.get(0).equals(0) && evens.get(1).equals(2));
     }
 
+    @Test
+    public void toPredicateInFilterOperator() throws Exception {
+        List<Integer> evens = Observable.fromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+                .filter(Curry.toPredicate(remainderFilter(), 2))
+                .toList().blockingGet();
+
+        assertTrue(evens.get(0).equals(0) && evens.get(1).equals(2));
+    }
+
     private BiPredicate<Integer, Integer> remainderFilter() {
         return new BiPredicate<Integer, Integer>()
         {
@@ -96,6 +115,11 @@ public class CurryTest
         Observable.fromArray(0, 0).blockingForEach(Curry.apply(nonZeroConsumer(), 1));
     }
 
+    @Test
+    public void toConsumerInForEachOperator() throws Exception {
+        Observable.fromArray(0, 0).blockingForEach(Curry.toConsumer(nonZeroConsumer(), 1));
+    }
+
     private BiConsumer<Integer, Integer> nonZeroConsumer() {
         return new BiConsumer<Integer, Integer>()
         {
@@ -110,6 +134,21 @@ public class CurryTest
     public void curryFunction3Successfully() throws Exception {
         CurriedFunction<String, Integer, String> formatInteger = Curry.apply(formatter(), 0);
         Function<Integer, String> stringWithSpace = formatInteger.apply(" ");
+        List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
+        assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
+    }
+
+    @Test
+    public void toBiFunctionFromFunction3Successfully() throws Exception {
+        CurriedFunction<String, Integer, String> formatInteger = Curry.toBiFunction(formatter(), 0);
+        Function<Integer, String> stringWithSpace = formatInteger.apply(" ");
+        List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
+        assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
+    }
+
+    @Test
+    public void toFunctionFromFunction3Successfully() throws Exception {
+        Function<Integer, String> stringWithSpace = Curry.toFunction(formatter(), 0," ");
         List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
         assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
     }
