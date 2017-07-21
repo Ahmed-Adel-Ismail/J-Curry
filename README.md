@@ -5,7 +5,7 @@ A library that enables Currying functions in Java (using RxJava2 interfaces), co
 
 A small video that explains Currying : https://www.youtube.com/watch?v=iZLP4qOwY8I&feature=youtu.be
 
-# Curry.apply(function,firstParameter)
+# Curry.apply()
 
 To curry any function you will need to call Curry.apply(), the apply method will return another function that takes the next parameter and be executed later.
 
@@ -44,6 +44,33 @@ A sample example for a logging function is as follows :
     
     }
 
+# Curry.toConsumer(), Curry.toFunction(), Curry.toBiFunction(), Curry.toPredicate()
+
+Those methods were added in version 0.0.2, to make it possible to pass "method reference" as there first parameter, for Android this requires adding Retrolambda
+
+- how to use Retrolambda : http://www.vogella.com/tutorials/Retrolambda/article.html
+- Retrolambda on Github : https://github.com/evant/gradle-retrolambda
+
+refactoring the previous example to use method reference instead of a BiConsumer :
+
+    public class MainActivity extends AppCompatActivity
+    {
+
+        private final Consumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            try{
+                log.accept("onCreate()");
+            }catch(Exception e){
+                // do something
+            }
+        }
+    
+    }
+
 # RxConsumer, RxFunction, RxPredicate
 
 By default the functional interfaces (Consumer, Function, Predicate), there method throws Exception by default, thats why we have 
@@ -61,23 +88,8 @@ the method's Signature, those interfaces are (RxConsumer, RxFunction, RxPredicat
     public class MainActivity extends AppCompatActivity
     {
 
-        private final RxConsumer<String> log = Curry.apply(debugLog(), "MainActivity");
-    
-        /**
-         * a function that logs debug messages, can be declared in another class
-         *
-         * @return a {@link BiConsumer} that logs the passed tag and message
-         */
-        private static BiConsumer<String, String> debugLog() {
-            return new BiConsumer<String, String>()
-            {
-                @Override
-                public void accept(String tag, String message) {
-                    Log.d(tag, message);
-                }
-            };
-        }
-    
+        private final RxConsumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -89,16 +101,16 @@ the method's Signature, those interfaces are (RxConsumer, RxFunction, RxPredicat
     
 so what happened to the thrown Exception ?
 
-    Curried functions does not throw exceptions other than {@link RuntimeException},
-    if there execution method threw an {@link Exception}, it will be wrapped in a
-    {@link RuntimeException}, else it will throw the sub-class of the {@link RuntimeException} that
+    Curried functions does not throw exceptions other than RuntimeException,
+    if there execution method threw an Exception, it will be wrapped in a
+    RuntimeException, else it will throw the sub-class of the RuntimeException that
     was already thrown by the executing function    
     
 # Usage with RxJava2 Operators
 
 The greatest benefit from such library is to use with RxJava2 operators, since it uses the RxJava interfaces (Consumer, Function, Predicate).
 
-exmaples from CurryTest.java :
+exmaples from CurryTest.java in version 0.0.1 :
 
 use in map() operator :
 
@@ -147,6 +159,18 @@ use in filter() operator :
 
 and so on ... since every Curry.apply() returns a Functional interface that awaits single parameter, this is perfectly usable in RxJava2 operators 
 
+# Usage with RxJava2 Operators after version 0.0.2 (with method reference) :
+
+    Observable.fromArray("1","2","3","4","5")
+                .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
+
+    Observable.fromArray(1,2,3,4)
+                .map(Curry.toFunction(IntMath::checkedMultiply,10))
+                .map(Curry.toFunction(String::format, "|%3d|"))
+                .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
+		
+notice that Currying now can work on any function in any class, and now it does not require implementing functional interfaces any more
+
 # Adding gradle dependency
 
 Step 1. Add it in your root build.gradle at the end of repositories:
@@ -161,7 +185,7 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 	  
     dependencies {
-	      compile 'com.github.Terebentikh:J-Curry:0.0.1'
+	      compile 'com.github.Terebentikh:J-Curry:0.0.2'
     }
 
 
