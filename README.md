@@ -6,13 +6,13 @@ A library that enables Currying functions in Java (using RxJava2 interfaces), co
 A small video that explains Currying : https://www.youtube.com/watch?v=iZLP4qOwY8I&feature=youtu.be
 
 # Curry.toConsumer(), Curry.toFunction(), Curry.toBiFunction(), Curry.toPredicate()
-it is possible to Curry any method through one of 2 ways, the first is to put this method in one of the functional interfaces like a Consumer.java, or Function.java, etc..., or through passing it's "method reference" as there first parameter, for Android this requires adding Retrolambda
+it is possible to Curry any method through one of 2 ways, the first is to put this method in one of the RxJava2 functional interfaces like a Consumer.java, or Function.java, etc..., or through passing it's "method reference" as there first parameter, for Android this requires adding Retrolambda
 
 - how to use Retrolambda : http://www.vogella.com/tutorials/Retrolambda/article.html
 - Retrolambda on Github : https://github.com/evant/gradle-retrolambda
 
-    public class MainActivity extends AppCompatActivity
-    {
+        public class MainActivity extends AppCompatActivity
+        {
 
         private final Consumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
 
@@ -43,19 +43,17 @@ to wrap it's call in a try/catch, like this :
 so the library provides interfaces that already extends those functional interfaces, but removes the "throws Exception" from 
 the method's Signature, those interfaces are (RxConsumer, RxFunction, RxPredicate) ... used as follows :
 
-    public class MainActivity extends AppCompatActivity
-    {
+	public class MainActivity extends AppCompatActivity {
 
-        private final RxConsumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
+		private final RxConsumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            log.accept("onCreate()");
-        }
-    
-    }
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+		    super.onCreate(savedInstanceState);
+		    setContentView(R.layout.activity_main);
+		    log.accept("onCreate()");
+		}
+	}
     
 so what happened to the thrown Exception ?
 
