@@ -1,29 +1,33 @@
 package com.functional.curry;
 
+
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 
+
 /**
- * a curried {@link Function3}
+ * a curried {@link Function3} with a {@code void} return type, curried as a
+ * {@link Consumer}
  * <p>
- * Created by Ahmed Adel Ismail on 6/26/2017.
+ * Created by Ahmed Adel Ismail on 7/26/2017.
  */
-class CurriedFunc3<T1, T2, T3, R> implements RxFunction<T3, R>
+public class CurriedConsumer3<T1, T2, T3> implements RxConsumer<T3>
 {
     private final boolean executable;
-    private final Function3<T1, T2, T3, R> function3;
+    private final Function3<T1, T2, T3, Void> function3;
     private final T1 parameterOne;
     private final T2 parameterTwo;
 
 
-    CurriedFunc3(Function3<T1, T2, T3, R> function3, T1 parameterOne) {
+    CurriedConsumer3(Function3<T1, T2, T3, Void> function3, T1 parameterOne) {
         this.function3 = function3;
         this.parameterOne = parameterOne;
         this.parameterTwo = null;
         this.executable = false;
     }
 
-    private CurriedFunc3(Function3<T1, T2, T3, R> function3, T1 parameterOne, T2 parameterTwo) {
+    private CurriedConsumer3(Function3<T1, T2, T3, Void> function3, T1 parameterOne, T2 parameterTwo) {
         this.function3 = function3;
         this.parameterOne = parameterOne;
         this.parameterTwo = parameterTwo;
@@ -31,16 +35,16 @@ class CurriedFunc3<T1, T2, T3, R> implements RxFunction<T3, R>
     }
 
     @Override
-    public R apply(@NonNull T3 parameterThree) {
+    public void accept(@NonNull T3 parameterThree) {
         try {
-            return doApply(parameterThree);
+            doApply(parameterThree);
         }
         catch (Throwable e) {
             throw new RuntimeExceptionConverter().apply(e);
         }
     }
 
-    private R doApply(@NonNull T3 parameterThree) throws Exception {
+    private Void doApply(@NonNull T3 parameterThree) throws Exception {
         if (executable) {
             return function3.apply(parameterOne, parameterTwo, parameterThree);
         }
@@ -55,13 +59,14 @@ class CurriedFunc3<T1, T2, T3, R> implements RxFunction<T3, R>
      *
      * @return a curried version of this function
      */
-    CurriedFunction<T2, T3, R> curry() {
-        return new CurriedFunction<T2, T3, R>()
+    CurriedConsumer<T2, T3> curry() {
+        return new CurriedConsumer<T2, T3>()
         {
             @Override
-            public RxFunction<T3, R> apply(@NonNull T2 parameterTwo) {
-                return new CurriedFunc3<>(function3, parameterOne, parameterTwo);
+            public RxConsumer<T3> apply(@NonNull T2 parameterTwo) {
+                return new CurriedConsumer3<>(function3, parameterOne, parameterTwo);
             }
         };
     }
+
 }

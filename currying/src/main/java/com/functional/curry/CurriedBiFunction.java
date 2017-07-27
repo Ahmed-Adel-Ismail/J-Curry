@@ -3,6 +3,7 @@ package com.functional.curry;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 
+
 /**
  * a CurriedFunction {@link BiFunction}
  * <p>
@@ -15,7 +16,7 @@ class CurriedBiFunction<ParameterOne, ParameterTwo, Return>
     private final ParameterOne parameterOne;
 
     CurriedBiFunction(BiFunction<ParameterOne, ParameterTwo, Return> biFunction,
-                             ParameterOne parameterOne) {
+                      ParameterOne parameterOne) {
         this.biFunction = biFunction;
         this.parameterOne = parameterOne;
     }

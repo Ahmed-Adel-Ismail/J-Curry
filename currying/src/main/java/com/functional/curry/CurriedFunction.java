@@ -2,6 +2,7 @@ package com.functional.curry;
 
 import io.reactivex.functions.Function;
 
+
 /**
  * an interface that is implemented by all the Currying {@link Function} related implementers
  * <p>

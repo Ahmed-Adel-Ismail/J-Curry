@@ -22,19 +22,75 @@ import static org.junit.Assert.assertTrue;
  */
 public class CurryTest
 {
+    private static class Ref{
+        boolean value;
+    }
+
 
     @Test
-    public void curryBiFunctionInMapOperator() throws Exception {
-        List<Integer> integers = Observable.fromArray(1, 2)
-                .map(Curry.apply(sumFunction(), 10))
-                .toList().blockingGet();
-
-        assertTrue(integers.get(0).equals(11) && integers.get(1).equals(12));
-
+    public void toBiConsumerFromFunction3() throws Exception{
+        Ref r1 = new Ref();
+        Ref r2 = new Ref();
+        Ref r3 = new Ref();
+        Curry.toBiConsumer(voidFunction3(),r1).apply(r2).accept(r3);
+        assertTrue(r1.value && r2.value && r3.value);
     }
 
     @Test
-    public void toFunctionInMapOperator() throws Exception {
+    public void toConsumerFromFunction3() throws Exception{
+        Ref r1 = new Ref();
+        Ref r2 = new Ref();
+        Ref r3 = new Ref();
+        Curry.toConsumer(voidFunction3(),r1,r2).accept(r3);
+        assertTrue(r1.value && r2.value && r3.value);
+    }
+
+    private Function3<Ref, Ref, Ref, Void> voidFunction3() {
+        return new Function3<Ref, Ref, Ref, Void>()
+        {
+            @Override
+            public Void apply(Ref r1, Ref r2, Ref r3) {
+                r1.value = true;
+                r2.value = true;
+                r3.value = true;
+                return null;
+            }
+        };
+    }
+
+    @Test
+    public void toBiPredicateFromFunction3() throws Exception{
+        Ref r1 = new Ref();
+        Ref r2 = new Ref();
+        Ref r3 = new Ref();
+        Curry.toBiPredicate(booleanFunction3(),r1).apply(r2).test(r3);
+        assertTrue(r1.value && r2.value && r3.value);
+    }
+
+    @Test
+    public void toPredicateFromFunction3() throws Exception{
+        Ref r1 = new Ref();
+        Ref r2 = new Ref();
+        Ref r3 = new Ref();
+        Curry.toPredicate(booleanFunction3(),r1,r2).test(r3);
+        assertTrue(r1.value && r2.value && r3.value);
+    }
+
+    private Function3<Ref, Ref, Ref, Boolean> booleanFunction3() {
+        return new Function3<Ref, Ref, Ref, Boolean>()
+        {
+            @Override
+            public Boolean apply(Ref r1, Ref r2, Ref r3) {
+                r1.value = true;
+                r2.value = true;
+                r3.value = true;
+                return false;
+            }
+        };
+    }
+
+    @Test
+    public void curryBiFunctionInMapOperator() throws Exception {
         List<Integer> integers = Observable.fromArray(1, 2)
                 .map(Curry.toFunction(sumFunction(), 10))
                 .toList().blockingGet();
@@ -46,7 +102,7 @@ public class CurryTest
     @Test
     public void useCurriedBiFunctionInLocalVariableInMapOperator() throws Exception {
 
-        Function<Integer, Integer> sumWith10 = Curry.apply(sumFunction(), 10);
+        Function<Integer, Integer> sumWith10 = Curry.toFunction(sumFunction(), 10);
         List<Integer> integers = Observable.fromArray(1, 2)
                 .map(sumWith10)
                 .toList().blockingGet();
@@ -57,7 +113,7 @@ public class CurryTest
 
     @Test
     public void curryBiFunctionSuccessfully() throws Exception {
-        Function<Integer, Integer> curriedBiFunction = Curry.apply(sumFunction(), 10);
+        Function<Integer, Integer> curriedBiFunction = Curry.toFunction(sumFunction(), 10);
         Integer result = curriedBiFunction.apply(10);
         assertEquals(result, Integer.valueOf(20));
     }
@@ -65,7 +121,7 @@ public class CurryTest
 
     @Test
     public void curryBiFunctionTwiceAndUseEachOneAsDifferentInstance() throws Exception {
-        Function<Integer, Integer> curriedFunction = Curry.apply(sumFunction(), 10);
+        Function<Integer, Integer> curriedFunction = Curry.toFunction(sumFunction(), 10);
         Integer result = curriedFunction.apply(10);
         Integer resultTwo = curriedFunction.apply(20);
         assertTrue(result.equals(20) && resultTwo.equals(30));
@@ -84,7 +140,7 @@ public class CurryTest
     @Test
     public void curryBiPredicateInFilterOperator() throws Exception {
         List<Integer> evens = Observable.fromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-                .filter(Curry.apply(remainderFilter(), 2))
+                .filter(Curry.toPredicate(remainderFilter(), 2))
                 .toList().blockingGet();
 
         assertTrue(evens.get(0).equals(0) && evens.get(1).equals(2));
@@ -112,7 +168,7 @@ public class CurryTest
 
     @Test
     public void curryBiConsumerInForEachOperator() throws Exception {
-        Observable.fromArray(0, 0).blockingForEach(Curry.apply(nonZeroConsumer(), 1));
+        Observable.fromArray(0, 0).blockingForEach(Curry.toConsumer(nonZeroConsumer(), 1));
     }
 
     @Test
@@ -128,14 +184,6 @@ public class CurryTest
                 assertTrue((numOne + numTwo) != 0);
             }
         };
-    }
-
-    @Test
-    public void curryFunction3Successfully() throws Exception {
-        CurriedFunction<String, Integer, String> formatInteger = Curry.apply(formatter(), 0);
-        Function<Integer, String> stringWithSpace = formatInteger.apply(" ");
-        List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
-        assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
     }
 
     @Test
@@ -165,7 +213,7 @@ public class CurryTest
 
     @Test(expected = RuntimeException.class)
     public void throwNonRuntimeException_WrapInRuntimeException() throws Exception{
-        Curry.apply(new BiConsumer<Integer, Integer>()
+        Curry.toConsumer(new BiConsumer<Integer, Integer>()
         {
             @Override
             public void accept(Integer integer, Integer integer2) throws Exception {
@@ -176,12 +224,81 @@ public class CurryTest
 
     @Test(expected = UnsupportedOperationException.class)
     public void throwRuntimeException_DelegateTheException() throws Exception{
-        Curry.apply(new BiConsumer<Integer, Integer>()
+        Curry.toConsumer(new BiConsumer<Integer, Integer>()
         {
             @Override
             public void accept(Integer integer, Integer integer2) throws Exception {
                 throw new UnsupportedOperationException();
             }
         },10).accept(0);
+    }
+
+    @Test
+    public void toFunction_ExecuteSuccessfully() throws Exception {
+        IntRef r = new IntRef();
+        BooleanRef b = new BooleanRef();
+        SwapCurry.toFunction(intBiFunction(), r).apply(b);
+        assertTrue(r.value != null && b.value);
+    }
+
+    private BiFunction<BooleanRef, IntRef, Void> intBiFunction() {
+        return new BiFunction<BooleanRef, IntRef, Void>()
+        {
+            @Override
+            public Void apply(@NonNull BooleanRef booleanRef, IntRef r) throws Exception {
+                booleanRef.value = true;
+                r.value = 1;
+                return null;
+            }
+        };
+    }
+
+    @Test
+    public void toConsumer_ExecuteSuccessfully() throws Exception {
+        IntRef r = new IntRef();
+        BooleanRef b = new BooleanRef();
+        SwapCurry.toConsumer(intBiConsumer(), r).accept(b);
+        assertTrue(r.value != null && b.value);
+    }
+
+    private BiConsumer<BooleanRef, IntRef> intBiConsumer() {
+        return new BiConsumer<BooleanRef, IntRef>()
+        {
+            @Override
+            public void accept(BooleanRef booleanRef, IntRef intRef) throws Exception {
+                booleanRef.value = true;
+                intRef.value = 1;
+            }
+        };
+    }
+
+    @Test
+    public void toPredicate_ExecuteSuccessfully() throws Exception {
+        IntRef r = new IntRef();
+        BooleanRef b = new BooleanRef();
+        SwapCurry.toPredicate(intBiPredicate(), r).test(b);
+        assertTrue(r.value != null && b.value);
+    }
+
+    private BiPredicate<BooleanRef, IntRef> intBiPredicate() {
+        return new BiPredicate<BooleanRef, IntRef>()
+        {
+            @Override
+            public boolean test(@NonNull BooleanRef booleanRef, @NonNull IntRef intRef) throws Exception {
+                booleanRef.value = true;
+                intRef.value = 1;
+                return false;
+            }
+        };
+    }
+
+    private static class BooleanRef
+    {
+        boolean value;
+    }
+
+    private static class IntRef
+    {
+        Integer value;
     }
 }

@@ -1,5 +1,6 @@
 package com.functional.curry;
 
+
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiConsumer;
 
