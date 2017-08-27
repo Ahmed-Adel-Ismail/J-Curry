@@ -1,60 +1,18 @@
 # J-Curry
-A library that enables Currying functions in Java (using RxJava2 interfaces), compatible with Java 6 and 7
+A library that enables Currying functions in Java (using RxJava2 interfaces), compatible with Java 7
 
 # What is Currying
 
 A small video that explains Currying : https://www.youtube.com/watch?v=iZLP4qOwY8I&feature=youtu.be
 
-# Curry.apply()
-
-To curry any function you will need to call Curry.apply(), the apply method will return another function that takes the next parameter and be executed later.
-
-A sample example for a logging function is as follows :
-
-    public class MainActivity extends AppCompatActivity
-    {
-
-        private final Consumer<String> log = Curry.apply(debugLog(), "MainActivity");
-    
-        /**
-         * a function that logs debug messages, can be declared in another class
-         *
-         * @return a {@link BiConsumer} that logs the passed tag and message
-         */
-        private static BiConsumer<String, String> debugLog() {
-            return new BiConsumer<String, String>()
-            {
-                @Override
-                public void accept(String tag, String message) {
-                    Log.d(tag, message);
-                }
-            };
-        }
-    
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            try{
-                log.accept("onCreate()");
-            }catch(Exception e){
-                // do something
-            }
-        }
-    
-    }
-
 # Curry.toConsumer(), Curry.toFunction(), Curry.toBiFunction(), Curry.toPredicate()
-
-Those methods were added in version 0.0.2, to make it possible to pass "method reference" as there first parameter, for Android this requires adding Retrolambda
+it is possible to Curry any method through one of 2 ways, the first is to put this method in one of the RxJava2 functional interfaces like a Consumer.java, or Function.java, etc..., or through passing it's "method reference" as there first parameter, for Android this requires adding Retrolambda
 
 - how to use Retrolambda : http://www.vogella.com/tutorials/Retrolambda/article.html
 - Retrolambda on Github : https://github.com/evant/gradle-retrolambda
 
-refactoring the previous example to use method reference instead of a BiConsumer :
-
-    public class MainActivity extends AppCompatActivity
-    {
+        public class MainActivity extends AppCompatActivity
+        {
 
         private final Consumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
 
@@ -85,19 +43,17 @@ to wrap it's call in a try/catch, like this :
 so the library provides interfaces that already extends those functional interfaces, but removes the "throws Exception" from 
 the method's Signature, those interfaces are (RxConsumer, RxFunction, RxPredicate) ... used as follows :
 
-    public class MainActivity extends AppCompatActivity
-    {
+	public class MainActivity extends AppCompatActivity {
 
-        private final RxConsumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
+		private final RxConsumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            log.accept("onCreate()");
-        }
-    
-    }
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+		    super.onCreate(savedInstanceState);
+		    setContentView(R.layout.activity_main);
+		    log.accept("onCreate()");
+		}
+	}
     
 so what happened to the thrown Exception ?
 
@@ -106,7 +62,7 @@ so what happened to the thrown Exception ?
     RuntimeException, else it will throw the sub-class of the RuntimeException that
     was already thrown by the executing function    
     
-# Usage with RxJava2 Operators
+# Usage with RxJava2 Operators through functional interfaces
 
 The greatest benefit from such library is to use with RxJava2 operators, since it uses the RxJava interfaces (Consumer, Function, Predicate).
 
@@ -117,7 +73,7 @@ use in map() operator :
     @Test
     public void useCurriedBiFunctionInLocalVariableInMapOperator() throws Exception {
 
-        Function<Integer, Integer> sumWith10 = Curry.apply(sumFunction(), 10);
+        Function<Integer, Integer> sumWith10 = Curry.toFunction(sumFunction(), 10);
         List<Integer> integers = Observable.fromArray(1, 2)
                 .map(sumWith10)
                 .toList().blockingGet();
@@ -141,7 +97,7 @@ use in filter() operator :
     @Test
     public void curryBiPredicateInFilterOperator() throws Exception {
         List<Integer> evens = Observable.fromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-                .filter(Curry.apply(remainderFilter(), 2))
+                .filter(Curry.toPredicate(remainderFilter(), 2))
                 .toList().blockingGet();
 
         assertTrue(evens.get(0).equals(0) && evens.get(1).equals(2));
@@ -157,9 +113,9 @@ use in filter() operator :
         };
     }
 
-and so on ... since every Curry.apply() returns a Functional interface that awaits single parameter, this is perfectly usable in RxJava2 operators 
+and so on ... since every Curry method returns a Functional interface that awaits single parameter, this is perfectly usable in RxJava2 operators 
 
-# Usage with RxJava2 Operators after version 0.0.2 (with method reference) :
+# Usage with RxJava2 Operators through method reference (using Retrolambda)
 
     Observable.fromArray("1","2","3","4","5")
                 .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
@@ -170,6 +126,14 @@ and so on ... since every Curry.apply() returns a Functional interface that awai
                 .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
 		
 notice that Currying now can work on any function in any class, and now it does not require implementing functional interfaces any more
+
+# SwapCurry ... where the fun begins
+after version 0.0.3, it is possible to swap the parameters of the curried function, so we can pass the second parameter of the method first, and the curried function will return another function that expects to receive the first parameter of the original method, then it executes, like in the following example :
+
+    Observable.fromArray("%d","%02d","%04d")
+                .forEach(SwapCurry.toConsumer(System.out::printf,10));
+		
+the System.out.printf() takes a "String" as it's first parameter, and an "Integer" as it's second parameter, what was done here is that, we passed the "Integer" first in the SwapCurry.toConsumer() method, and we receieved the "String" later from the Observable.forEach() method.
 
 # Adding gradle dependency
 
@@ -185,7 +149,7 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 	  
     dependencies {
-	      compile 'com.github.Terebentikh:J-Curry:0.0.2'
+	      compile 'com.github.Terebentikh:J-Curry:0.0.3'
     }
 
 
