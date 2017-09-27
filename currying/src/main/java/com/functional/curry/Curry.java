@@ -1,6 +1,7 @@
 package com.functional.curry;
 
 
+import io.reactivex.functions.Action;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.BiPredicate;
@@ -193,6 +194,46 @@ public class Curry
     public static <ParameterOne, ParameterTwo> RxPredicate<ParameterTwo>
     toPredicate(BiPredicate<ParameterOne, ParameterTwo> predicate, ParameterOne parameterOne) {
         return new CurriedBiPredicate<>(predicate, parameterOne);
+    }
+
+    /**
+     * curry a {@link Consumer} to an {@link Action}
+     *
+     * @param consumer      the {@link BiPredicate} that will be executed
+     * @param parameterOne   the first parameter
+     * @return the {@link Action} that will be passed the second parameter
+     * later and be executed
+     */
+    public static <ParameterOne> RxAction toAction(Consumer<ParameterOne> consumer,
+                                                   ParameterOne parameterOne) {
+        return new CurriedAction<>(consumer, parameterOne);
+    }
+
+    /**
+     * curry a {@link Consumer} to an {@link Action}
+     *
+     * @param function      the {@link BiPredicate} that will be executed
+     * @param parameterOne   the first parameter
+     * @return the {@link Action} that will be passed the second parameter
+     * later and be executed
+     */
+    public static <ParameterOne> RxAction toAction(Function<ParameterOne, ?> function,
+                                                   ParameterOne parameterOne) {
+        return new CurriedAction<>(function, parameterOne);
+    }
+
+    /**
+     * curry a {@link Consumer} to an {@link Action}
+     *
+     * @param function      the {@link BiPredicate} that will be executed
+     * @param parameterOne   the first parameter
+     * @return the {@link Action} that will be passed the second parameter
+     * later and be executed
+     */
+    public static <ParameterOne, Return> RxCallable<Return> toCallable(
+            Function<ParameterOne, Return> function,
+            ParameterOne parameterOne) {
+        return new CurriedCallable<>(function, parameterOne);
     }
 
 }

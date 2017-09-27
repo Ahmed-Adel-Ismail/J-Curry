@@ -2,13 +2,16 @@ package com.functional.curry;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.BiPredicate;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function3;
 
@@ -22,26 +25,27 @@ import static org.junit.Assert.assertTrue;
  */
 public class CurryTest
 {
-    private static class Ref{
+    private static class Ref
+    {
         boolean value;
     }
 
 
     @Test
-    public void toBiConsumerFromFunction3() throws Exception{
+    public void toBiConsumerFromFunction3() throws Exception {
         Ref r1 = new Ref();
         Ref r2 = new Ref();
         Ref r3 = new Ref();
-        Curry.toBiConsumer(voidFunction3(),r1).apply(r2).accept(r3);
+        Curry.toBiConsumer(voidFunction3(), r1).apply(r2).accept(r3);
         assertTrue(r1.value && r2.value && r3.value);
     }
 
     @Test
-    public void toConsumerFromFunction3() throws Exception{
+    public void toConsumerFromFunction3() throws Exception {
         Ref r1 = new Ref();
         Ref r2 = new Ref();
         Ref r3 = new Ref();
-        Curry.toConsumer(voidFunction3(),r1,r2).accept(r3);
+        Curry.toConsumer(voidFunction3(), r1, r2).accept(r3);
         assertTrue(r1.value && r2.value && r3.value);
     }
 
@@ -59,20 +63,20 @@ public class CurryTest
     }
 
     @Test
-    public void toBiPredicateFromFunction3() throws Exception{
+    public void toBiPredicateFromFunction3() throws Exception {
         Ref r1 = new Ref();
         Ref r2 = new Ref();
         Ref r3 = new Ref();
-        Curry.toBiPredicate(booleanFunction3(),r1).apply(r2).test(r3);
+        Curry.toBiPredicate(booleanFunction3(), r1).apply(r2).test(r3);
         assertTrue(r1.value && r2.value && r3.value);
     }
 
     @Test
-    public void toPredicateFromFunction3() throws Exception{
+    public void toPredicateFromFunction3() throws Exception {
         Ref r1 = new Ref();
         Ref r2 = new Ref();
         Ref r3 = new Ref();
-        Curry.toPredicate(booleanFunction3(),r1,r2).test(r3);
+        Curry.toPredicate(booleanFunction3(), r1, r2).test(r3);
         assertTrue(r1.value && r2.value && r3.value);
     }
 
@@ -196,7 +200,7 @@ public class CurryTest
 
     @Test
     public void toFunctionFromFunction3Successfully() throws Exception {
-        Function<Integer, String> stringWithSpace = Curry.toFunction(formatter(), 0," ");
+        Function<Integer, String> stringWithSpace = Curry.toFunction(formatter(), 0, " ");
         List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
         assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
     }
@@ -212,29 +216,29 @@ public class CurryTest
     }
 
     @Test(expected = RuntimeException.class)
-    public void throwNonRuntimeException_WrapInRuntimeException() throws Exception{
+    public void throwNonRuntimeException_WrapInRuntimeException() throws Exception {
         Curry.toConsumer(new BiConsumer<Integer, Integer>()
         {
             @Override
             public void accept(Integer integer, Integer integer2) throws Exception {
                 throw new Exception();
             }
-        },10).accept(0);
+        }, 10).accept(0);
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void throwRuntimeException_DelegateTheException() throws Exception{
+    public void throwRuntimeException_DelegateTheException() throws Exception {
         Curry.toConsumer(new BiConsumer<Integer, Integer>()
         {
             @Override
             public void accept(Integer integer, Integer integer2) throws Exception {
                 throw new UnsupportedOperationException();
             }
-        },10).accept(0);
+        }, 10).accept(0);
     }
 
     @Test
-    public void toFunction_ExecuteSuccessfully() throws Exception {
+    public void toSwappedFunction_ExecuteSuccessfully() throws Exception {
         IntRef r = new IntRef();
         BooleanRef b = new BooleanRef();
         SwapCurry.toFunction(intBiFunction(), r).apply(b);
@@ -254,7 +258,7 @@ public class CurryTest
     }
 
     @Test
-    public void toConsumer_ExecuteSuccessfully() throws Exception {
+    public void toSwappedConsumer_ExecuteSuccessfully() throws Exception {
         IntRef r = new IntRef();
         BooleanRef b = new BooleanRef();
         SwapCurry.toConsumer(intBiConsumer(), r).accept(b);
@@ -273,7 +277,7 @@ public class CurryTest
     }
 
     @Test
-    public void toPredicate_ExecuteSuccessfully() throws Exception {
+    public void toSwappedPredicate_ExecuteSuccessfully() throws Exception {
         IntRef r = new IntRef();
         BooleanRef b = new BooleanRef();
         SwapCurry.toPredicate(intBiPredicate(), r).test(b);
@@ -291,6 +295,66 @@ public class CurryTest
             }
         };
     }
+
+
+    @Test
+    public void toActionFromConsumer() throws Exception {
+
+        final List<Boolean> result = new ArrayList<>(0);
+        Consumer<Boolean> consumer = new Consumer<Boolean>()
+        {
+            @Override
+            public void accept(@NonNull Boolean o) throws Exception {
+                result.add(o);
+            }
+        };
+
+        RxAction action = Curry.toAction(consumer, true);
+        action.run();
+
+        assertTrue(result.get(0));
+
+
+    }
+
+    @Test
+    public void toActionFromFunction() throws Exception {
+
+        final List<Boolean> result = new ArrayList<>(0);
+        Function<Boolean, Object> function = new Function<Boolean, Object>()
+        {
+            @Override
+            public Object apply(@NonNull Boolean o) throws Exception {
+                result.add(o);
+                return null;
+            }
+        };
+
+        RxAction action = Curry.toAction(function, true);
+        action.run();
+
+        assertTrue(result.get(0));
+
+
+    }
+
+    @Test
+    public void toCallableFromFunction() throws Exception {
+
+        Function<Integer, Integer> function = new Function<Integer, Integer>()
+        {
+            @Override
+            public Integer apply(@NonNull Integer o) throws Exception {
+                return o;
+            }
+        };
+
+        Callable<Integer> callable = Curry.toCallable(function, 1);
+        assertTrue(callable.call().equals(1));
+
+    }
+
+
 
     private static class BooleanRef
     {

@@ -29,7 +29,7 @@ it is possible to Curry any method through one of 2 ways, the first is to put th
     
     }
 
-# RxConsumer, RxFunction, RxPredicate
+# RxConsumer, RxFunction, RxPredicate, RxAction, RxCallable
 
 By default the functional interfaces (Consumer, Function, Predicate), there method throws Exception by default, thats why we have 
 to wrap it's call in a try/catch, like this :
@@ -117,13 +117,15 @@ and so on ... since every Curry method returns a Functional interface that await
 
 # Usage with RxJava2 Operators through method reference (using Retrolambda)
 
+    Observable.fromCallable()
+    
     Observable.fromArray("1","2","3","4","5")
                 .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
 
     Observable.fromArray(1,2,3,4)
                 .map(Curry.toFunction(IntMath::checkedMultiply,10))
                 .map(Curry.toFunction(String::format, "|%3d|"))
-                .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
+                .subscribe(Curry.toConsumer(Log::d,"MY_TAG"), Throwable::printStackTrace);
 		
 notice that Currying now can work on any function in any class, and now it does not require implementing functional interfaces any more
 
@@ -149,16 +151,6 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 	  
     dependencies {
-	      compile 'com.github.Terebentikh:J-Curry:0.0.3'
+	      compile 'com.github.Ahmed-Adel-Ismail:J-Curry:0.0.4'
     }
 
-
-# Limitations
-
-this library already adds RxJava2 2.1.1 in it's dependencies :
-
-    dependencies {
-        compile 'io.reactivex.rxjava2:rxjava:2.1.1'
-    }
-
-if you add this library to your project, you dont need to include RxJava2 in your build.gradle, since it is already included
