@@ -117,8 +117,6 @@ and so on ... since every Curry method returns a Functional interface that await
 
 # Usage with RxJava2 Operators through method reference (using Retrolambda)
 
-    Observable.fromCallable()
-    
     Observable.fromArray("1","2","3","4","5")
                 .forEach(Curry.toConsumer(Log::d,"MY_TAG"));
 
@@ -126,6 +124,20 @@ and so on ... since every Curry method returns a Functional interface that await
                 .map(Curry.toFunction(IntMath::checkedMultiply,10))
                 .map(Curry.toFunction(String::format, "|%3d|"))
                 .subscribe(Curry.toConsumer(Log::d,"MY_TAG"), Throwable::printStackTrace);
+	
+	
+	Observable.fromCallable(Curry.toCallable(this::requestProfileFromServer, userId))
+				.subscribeOn(Schedulers.io)
+				.observeOn(AndroidSchedulers.main())
+				.subscribe(
+					Curry.toConsumer(Log::d,"MY_TAG"),
+					Throwable::printStackTrace, 
+					Curry.toAction(this::completed,"COMPLETED_TAG"));
+				
+	private UserProfile requestProfileFromServer(String userId){...}
+	
+	private void completed(String tag){...}
+	
 		
 notice that Currying now can work on any function in any class, and now it does not require implementing functional interfaces any more
 
@@ -151,6 +163,6 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 	  
     dependencies {
-	      compile 'com.github.Ahmed-Adel-Ismail:J-Curry:0.0.4'
+	      compile 'com.github.Ahmed-Adel-Ismail:J-Curry:0.0.5'
     }
 
