@@ -5,7 +5,7 @@ A library that enables Currying functions in Java (using RxJava2 interfaces), co
 
 A small video that explains Currying : https://www.youtube.com/watch?v=iZLP4qOwY8I&feature=youtu.be
 
-# Curry.toConsumer(), Curry.toFunction(), Curry.toBiFunction(), Curry.toPredicate()
+# Curry.toConsumer(), Curry.toFunction(), Curry.toBiFunction(), Curry.toPredicate(), Curry.toAction(), Curry.toCallable()
 it is possible to Curry any method through one of 2 ways, the first is to put this method in one of the RxJava2 functional interfaces like a Consumer.java, or Function.java, etc..., or through passing it's "method reference" as there first parameter, for Android this requires adding Retrolambda
 
 - how to use Retrolambda : http://www.vogella.com/tutorials/Retrolambda/article.html
