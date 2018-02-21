@@ -199,8 +199,8 @@ public class Curry
     /**
      * curry a {@link Consumer} to an {@link Action}
      *
-     * @param consumer      the {@link BiPredicate} that will be executed
-     * @param parameterOne   the first parameter
+     * @param consumer     the {@link BiPredicate} that will be executed
+     * @param parameterOne the first parameter
      * @return the {@link Action} that will be passed the second parameter
      * later and be executed
      */
@@ -212,8 +212,8 @@ public class Curry
     /**
      * curry a {@link Consumer} to an {@link Action}
      *
-     * @param function      the {@link BiPredicate} that will be executed
-     * @param parameterOne   the first parameter
+     * @param function     the {@link BiPredicate} that will be executed
+     * @param parameterOne the first parameter
      * @return the {@link Action} that will be passed the second parameter
      * later and be executed
      */
@@ -225,8 +225,8 @@ public class Curry
     /**
      * curry a {@link Consumer} to an {@link Action}
      *
-     * @param function      the {@link BiPredicate} that will be executed
-     * @param parameterOne   the first parameter
+     * @param function     the {@link BiPredicate} that will be executed
+     * @param parameterOne the first parameter
      * @return the {@link Action} that will be passed the second parameter
      * later and be executed
      */
@@ -235,5 +235,9 @@ public class Curry
             ParameterOne parameterOne) {
         return new CurriedCallable<>(function, parameterOne);
     }
+
+
+
+
 
 }
