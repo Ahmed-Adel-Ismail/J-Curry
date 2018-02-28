@@ -12,8 +12,7 @@ import io.reactivex.functions.BiFunction;
  * <p>
  * Created by Ahmed Adel Ismail on 2/21/2018.
  */
-public class SwapTuples
-{
+public class SwapTuples {
 
     /**
      * pass the {@link Pair#getValue0()} as the second parameter to the given {@link BiConsumer},

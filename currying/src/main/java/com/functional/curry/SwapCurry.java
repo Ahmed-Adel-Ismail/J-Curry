@@ -15,8 +15,7 @@ import io.reactivex.functions.Predicate;
  * <p>
  * Created by Ahmed Adel Ismail on 7/26/2017.
  */
-public class SwapCurry
-{
+public class SwapCurry {
 
     /**
      * curry a {@link BiFunction} after swapping it's parameters, where it's first parameter
@@ -36,8 +35,7 @@ public class SwapCurry
     }
 
     private static <T1, T2, R> BiFunction<T2, T1, R> swappedFunction(final BiFunction<T1, T2, R> function) {
-        return new BiFunction<T2, T1, R>()
-        {
+        return new BiFunction<T2, T1, R>() {
             @Override
             public R apply(T2 parameterTwo, T1 parameterOne) throws Exception {
                 return function.apply(parameterOne, parameterTwo);
@@ -62,8 +60,7 @@ public class SwapCurry
     }
 
     private static <T1, T2> BiConsumer<T2, T1> swappedConsumer(final BiConsumer<T1, T2> consumer) {
-        return new BiConsumer<T2, T1>()
-        {
+        return new BiConsumer<T2, T1>() {
             @Override
             public void accept(T2 t2, T1 t1) throws Exception {
                 consumer.accept(t1, t2);
@@ -89,8 +86,7 @@ public class SwapCurry
     }
 
     private static <T1, T2> BiPredicate<T2, T1> swappedPredicate(final BiPredicate<T1, T2> predicate) {
-        return new BiPredicate<T2, T1>()
-        {
+        return new BiPredicate<T2, T1>() {
             @Override
             public boolean test(@NonNull T2 t2, @NonNull T1 t1) throws Exception {
                 return predicate.test(t1, t2);

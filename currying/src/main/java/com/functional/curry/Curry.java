@@ -34,165 +34,151 @@ import io.reactivex.functions.Predicate;
  * <p>
  * Created by Ahmed Adel Ismail on 6/27/2017.
  */
-public class Curry
-{
-
-
+public class Curry {
+    
     /**
-     * curryParameterTwo a {@link Function3}
+     * curry a {@link Function3}
      *
-     * @param function         the {@link Function3} that will be executed
-     * @param parameterOne     the first parameter
-     * @param <ParameterOne>   the type of the first parameter
-     * @param <ParameterTwo>   the type of the second parameter
-     * @param <ParameterThree> the type of the third parameter
-     * @param <Return>         the type of the expected result
+     * @param function     the {@link Function3} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <P3>         the type of the third parameter
+     * @param <R>          the type of the expected result
      * @return the {@link CurriedFunction} that will be passed the next parameter
      * later
      */
-    public static <ParameterOne, ParameterTwo, ParameterThree, Return>
-    CurriedFunction<ParameterTwo, ParameterThree, Return>
-    toBiFunction(Function3<ParameterOne, ParameterTwo, ParameterThree, Return> function, ParameterOne parameterOne) {
-        return new CurriedFunction3<>(function, parameterOne).curry();
-    }
-
-    /**
-     * curryParameterTwo a {@link Function3}
-     *
-     * @param function         the {@link Function3} that will be executed
-     * @param parameterOne     the first parameter
-     * @param <ParameterOne>   the type of the first parameter
-     * @param <ParameterTwo>   the type of the second parameter
-     * @param <ParameterThree> the type of the third parameter
-     * @param <Return>         the type of the expected result
-     * @return the {@link CurriedFunction} that will be passed the next parameter
-     * later
-     */
-    public static <ParameterOne, ParameterTwo, ParameterThree, Return>
-    RxFunction<ParameterThree, Return>
-    toFunction(Function3<ParameterOne, ParameterTwo, ParameterThree, Return> function,
-               ParameterOne parameterOne, ParameterTwo parameterTwo) {
+    public static <P1, P2, P3, R> RxFunction<P3, R> toFunction(
+            Function3<P1, P2, P3, R> function, P1 parameterOne, P2 parameterTwo) {
         return toBiFunction(function, parameterOne).apply(parameterTwo);
     }
 
     /**
-     * curryParameterTwo a {@link BiFunction}
+     * curry a {@link Function3}
      *
-     * @param function       the {@link BiFunction} that will be executed
-     * @param parameterOne   the first parameter
-     * @param <ParameterOne> the type of the first parameter
-     * @param <ParameterTwo> the type of the second parameter
-     * @param <Return>       the type of the expected result
+     * @param function     the {@link Function3} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <P3>         the type of the third parameter
+     * @param <R>          the type of the expected result
+     * @return the {@link CurriedFunction} that will be passed the next parameter
+     * later
+     */
+    public static <P1, P2, P3, R> CurriedFunction<P2, P3, R> toBiFunction(
+            Function3<P1, P2, P3, R> function, P1 parameterOne) {
+        return new CurriedFunction3<>(function, parameterOne).curry();
+    }
+
+    /**
+     * curry a {@link BiFunction}
+     *
+     * @param function     the {@link BiFunction} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <R>          the type of the expected result
      * @return the {@link Function} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne, ParameterTwo, Return> RxFunction<ParameterTwo, Return>
-    toFunction(BiFunction<ParameterOne, ParameterTwo, Return> function, ParameterOne parameterOne) {
+    public static <P1, P2, R> RxFunction<P2, R> toFunction(
+            BiFunction<P1, P2, R> function, P1 parameterOne) {
         return new CurriedBiFunction<>(function, parameterOne);
     }
 
 
     /**
-     * curryParameterTwo a {@link Function3} with a {@link Void} return type as a {@link BiConsumer}
+     * curry a {@link Function3} with a {@link Void} return type as a {@link BiConsumer}
      *
-     * @param function         the {@link Function3} that will be executed
-     * @param parameterOne     the first parameter
-     * @param <ParameterOne>   the type of the first parameter
-     * @param <ParameterTwo>   the type of the second parameter
-     * @param <ParameterThree> the type of the third parameter
+     * @param function     the {@link Function3} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <P3>         the type of the third parameter
      * @return the {@link CurriedFunction} that will be passed the next parameter
      * later
      */
-    public static <ParameterOne, ParameterTwo, ParameterThree>
-    CurriedConsumer<ParameterTwo, ParameterThree>
-    toBiConsumer(Function3<ParameterOne, ParameterTwo, ParameterThree, Void> function,
-                 ParameterOne parameterOne) {
+    public static <P1, P2, P3> CurriedConsumer<P2, P3> toBiConsumer(
+            Function3<P1, P2, P3, Void> function, P1 parameterOne) {
         return new CurriedConsumer3<>(function, parameterOne).curry();
     }
 
     /**
-     * curryParameterTwo a {@link Function3} with a {@link Void} return type as a {@link Consumer}
+     * curry a {@link Function3} with a {@link Void} return type as a {@link Consumer}
      *
-     * @param function         the {@link Function3} that will be executed
-     * @param parameterOne     the first parameter
-     * @param <ParameterOne>   the type of the first parameter
-     * @param <ParameterTwo>   the type of the second parameter
-     * @param <ParameterThree> the type of the third parameter
+     * @param function     the {@link Function3} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <P3>         the type of the third parameter
      * @return the {@link CurriedFunction} that will be passed the next parameter
      * later
      */
-    public static <ParameterOne, ParameterTwo, ParameterThree>
-    RxConsumer<ParameterThree>
-    toConsumer(Function3<ParameterOne, ParameterTwo, ParameterThree, Void> function,
-               ParameterOne parameterOne, ParameterTwo parameterTwo) {
+    public static <P1, P2, P3> RxConsumer<P3> toConsumer(
+            Function3<P1, P2, P3, Void> function, P1 parameterOne, P2 parameterTwo) {
         return new CurriedConsumer3<>(function, parameterOne).curry().apply(parameterTwo);
     }
 
     /**
-     * curryParameterTwo a {@link BiConsumer}
+     * curry a {@link BiConsumer}
      *
-     * @param consumer       the {@link BiConsumer} that will be executed
-     * @param parameterOne   the first parameter
-     * @param <ParameterOne> the type of the first parameter
-     * @param <ParameterTwo> the type of the second parameter
+     * @param consumer     the {@link BiConsumer} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
      * @return the {@link Consumer} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne, ParameterTwo> RxConsumer<ParameterTwo>
-    toConsumer(BiConsumer<ParameterOne, ParameterTwo> consumer, ParameterOne parameterOne) {
+    public static <P1, P2> RxConsumer<P2> toConsumer(BiConsumer<P1, P2> consumer, P1 parameterOne) {
         return new CurriedBiConsumer<>(consumer, parameterOne);
     }
 
 
     /**
-     * curryParameterTwo a {@link Function3} with a {@link Boolean} return type as a {@link BiPredicate}
+     * curry a {@link Function3} with a {@link Boolean} return type as a {@link BiPredicate}
      *
-     * @param function         the {@link Function3} that will be executed
-     * @param parameterOne     the first parameter
-     * @param <ParameterOne>   the type of the first parameter
-     * @param <ParameterTwo>   the type of the second parameter
-     * @param <ParameterThree> the type of the third parameter
+     * @param function     the {@link Function3} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <P3>         the type of the third parameter
      * @return the {@link CurriedFunction} that will be passed the next parameter
      * later
      */
-    public static <ParameterOne, ParameterTwo, ParameterThree>
-    CurriedPredicate<ParameterTwo, ParameterThree>
-    toBiPredicate(Function3<ParameterOne, ParameterTwo, ParameterThree, Boolean> function,
-                  ParameterOne parameterOne) {
+    public static <P1, P2, P3> CurriedPredicate<P2, P3> toBiPredicate(
+            Function3<P1, P2, P3, Boolean> function, P1 parameterOne) {
         return new CurriedPredicate3<>(function, parameterOne).curry();
     }
 
     /**
-     * curryParameterTwo a {@link Function3} with a {@link Boolean} return type as a {@link Predicate}
+     * curry a {@link Function3} with a {@link Boolean} return type as a {@link Predicate}
      *
-     * @param function         the {@link Function3} that will be executed
-     * @param parameterOne     the first parameter
-     * @param parameterTwo     the second parameter
-     * @param <ParameterOne>   the type of the first parameter
-     * @param <ParameterTwo>   the type of the second parameter
-     * @param <ParameterThree> the type of the third parameter
+     * @param function     the {@link Function3} that will be executed
+     * @param parameterOne the first parameter
+     * @param parameterTwo the second parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
+     * @param <P3>         the type of the third parameter
      * @return the {@link CurriedFunction} that will be passed the next parameter
      * later
      */
-    public static <ParameterOne, ParameterTwo, ParameterThree>
-    RxPredicate<ParameterThree>
-    toPredicate(Function3<ParameterOne, ParameterTwo, ParameterThree, Boolean> function,
-                ParameterOne parameterOne, ParameterTwo parameterTwo) {
+    public static <P1, P2, P3> RxPredicate<P3> toPredicate(
+            Function3<P1, P2, P3, Boolean> function, P1 parameterOne, P2 parameterTwo) {
         return new CurriedPredicate3<>(function, parameterOne).curry().apply(parameterTwo);
     }
 
     /**
-     * curryParameterTwo a {@link BiPredicate}
+     * curry a {@link BiPredicate}
      *
-     * @param predicate      the {@link BiPredicate} that will be executed
-     * @param parameterOne   the first parameter
-     * @param <ParameterOne> the type of the first parameter
-     * @param <ParameterTwo> the type of the second parameter
+     * @param predicate    the {@link BiPredicate} that will be executed
+     * @param parameterOne the first parameter
+     * @param <P1>         the type of the first parameter
+     * @param <P2>         the type of the second parameter
      * @return the {@link Predicate} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne, ParameterTwo> RxPredicate<ParameterTwo>
-    toPredicate(BiPredicate<ParameterOne, ParameterTwo> predicate, ParameterOne parameterOne) {
+    public static <P1, P2> RxPredicate<P2> toPredicate(
+            BiPredicate<P1, P2> predicate, P1 parameterOne) {
         return new CurriedBiPredicate<>(predicate, parameterOne);
     }
 
@@ -204,8 +190,7 @@ public class Curry
      * @return the {@link Action} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne> RxAction toAction(Consumer<ParameterOne> consumer,
-                                                   ParameterOne parameterOne) {
+    public static <P1> RxAction toAction(Consumer<P1> consumer, P1 parameterOne) {
         return new CurriedAction<>(consumer, parameterOne);
     }
 
@@ -217,8 +202,7 @@ public class Curry
      * @return the {@link Action} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne> RxAction toAction(Function<ParameterOne, ?> function,
-                                                   ParameterOne parameterOne) {
+    public static <P1> RxAction toAction(Function<P1, ?> function, P1 parameterOne) {
         return new CurriedAction<>(function, parameterOne);
     }
 
@@ -230,14 +214,9 @@ public class Curry
      * @return the {@link Action} that will be passed the second parameter
      * later and be executed
      */
-    public static <ParameterOne, Return> RxCallable<Return> toCallable(
-            Function<ParameterOne, Return> function,
-            ParameterOne parameterOne) {
+    public static <P1, R> RxCallable<R> toCallable(Function<P1, R> function, P1 parameterOne) {
         return new CurriedCallable<>(function, parameterOne);
     }
-
-
-
 
 
 }

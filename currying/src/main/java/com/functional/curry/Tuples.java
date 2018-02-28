@@ -12,8 +12,7 @@ import io.reactivex.functions.Function3;
  * <p>
  * Created by Ahmed Adel Ismail on 2/21/2018.
  */
-public class Tuples
-{
+public class Tuples {
 
     /**
      * pass the {@link Pair#getValue0()} as the first parameter to the given {@link BiConsumer},
