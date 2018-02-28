@@ -173,7 +173,11 @@ private void printNumbers(int first, int second) {
     System.out.println(first);
     System.out.println(second);
 }
+```
 
+With RxJava2 Streams, we have higher order functions that takes a BiFunction or BiConsumer and returns a Function that takes the <b>Pair</b> or <b>Map.Entry</b> and pass it as parameters to the BiFunction or BiConsumer, for example :
+
+```java
 public int sumMatrix(Map<Integer, Integer> matrix){
     return Observable.fromIterable(matrix.entrySet())
             // first convert every map entry to the sum of it's
@@ -186,20 +190,37 @@ public int sumMatrix(Map<Integer, Integer> matrix){
 }
 ```
 
+The above code is the same as :
+
+```java
+public int sumValuesInMap(Map<Integer, Integer> matrix) {
+    return Observable.fromIterable(matrix.entrySet())
+            // first convert every map entry to the sum of it's
+            // key and value
+            .map(Entries.toFunction(this::sum))
+            // then sum all the results
+            .reduce(this::sum)
+            // then get final result
+            .blockingGet();
+}
+```
 # Adding gradle dependency
 
 Step 1. Add it in your root build.gradle at the end of repositories:
 
-    allprojects {
-        repositories {
-            ...
-            maven { url 'https://jitpack.io' }
-        }
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
     }
+}
+```
   
 Step 2. Add the dependency
-	  
-    dependencies {
-	      compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.1.0'
-    }
 
+```gradle
+dependencies {
+    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.2.0'
+}
+```

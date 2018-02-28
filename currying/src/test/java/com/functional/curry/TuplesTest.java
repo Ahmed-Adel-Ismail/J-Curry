@@ -87,4 +87,30 @@ public class TuplesTest {
 
     }
 
+    @Test
+    public void toConsumerThenInvokeSuccessfully() throws Exception {
+        final boolean[] result = {false, false};
+        Tuples.toConsumer(new BiConsumer<Boolean, Boolean>() {
+            @Override
+            public void accept(Boolean valueOne, Boolean valueTwo) throws Exception {
+                result[0] = valueOne;
+                result[1] = valueTwo;
+            }
+        }).accept(Pair.with(true, true));
+
+        assertTrue(result[0] && result[1]);
+    }
+
+    @Test
+    public void toFunctionThenInvokeSuccessfully() throws Exception {
+        boolean result = Tuples.toFunction(new BiFunction<Boolean, Boolean, Boolean>() {
+            @Override
+            public Boolean apply(Boolean valueOne, Boolean valueTwo) throws Exception {
+                return valueOne && valueTwo;
+            }
+        }).apply(Pair.with(true, true));
+
+        assertTrue(result);
+    }
+
 }

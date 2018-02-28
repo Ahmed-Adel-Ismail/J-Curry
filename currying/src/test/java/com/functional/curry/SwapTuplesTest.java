@@ -62,5 +62,31 @@ public class SwapTuplesTest {
 
     }
 
+    @Test
+    public void toConsumerThenInvokeSuccessfully() throws Exception {
+        final int[] result = {1, 2};
+        SwapTuples.toConsumer(new BiConsumer<Integer, Integer>() {
+            @Override
+            public void accept(Integer valueOne, Integer valueTwo) throws Exception {
+                result[0] = valueOne;
+                result[1] = valueTwo;
+            }
+        }).accept(Pair.with(3, 4));
+
+        assertTrue(result[0] == 4 && result[1] == 3);
+    }
+
+    @Test
+    public void toFunctionThenInvokeSuccessfully() throws Exception {
+        int[] result = SwapTuples.toFunction(new BiFunction<Integer, Integer, int[]>() {
+            @Override
+            public int[] apply(Integer valueOne, Integer valueTwo) throws Exception {
+                return new int[]{valueOne, valueTwo};
+            }
+        }).apply(Pair.with(3, 4));
+
+        assertTrue(result[0] == 4 && result[1] == 3);
+    }
+
 
 }

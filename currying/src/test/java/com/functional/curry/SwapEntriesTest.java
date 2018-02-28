@@ -62,4 +62,29 @@ public class SwapEntriesTest {
 
     }
 
+    @Test
+    public void toConsumerThenInvokeSuccessfully() throws Exception {
+        final int[] result = {1, 2};
+        SwapEntries.toConsumer(new BiConsumer<Integer, Integer>() {
+            @Override
+            public void accept(Integer valueOne, Integer valueTwo) throws Exception {
+                result[0] = valueOne;
+                result[1] = valueTwo;
+            }
+        }).accept(MapEntry.with(3, 4).call());
+
+        assertTrue(result[0] == 4 && result[1] == 3);
+    }
+
+    @Test
+    public void toFunctionThenInvokeSuccessfully() throws Exception {
+        int[] result = SwapEntries.toFunction(new BiFunction<Integer, Integer, int[]>() {
+            @Override
+            public int[] apply(Integer valueOne, Integer valueTwo) throws Exception {
+                return new int[]{valueOne, valueTwo};
+            }
+        }).apply(MapEntry.with(3, 4).call());
+
+        assertTrue(result[0] == 4 && result[1] == 3);
+    }
 }

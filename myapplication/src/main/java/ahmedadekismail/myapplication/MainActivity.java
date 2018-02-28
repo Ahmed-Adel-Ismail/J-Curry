@@ -16,8 +16,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 
     private final RxConsumer<String> log = Curry.toConsumer(Log::d, "MainActivity");
 
@@ -30,15 +29,14 @@ public class MainActivity extends AppCompatActivity
 }
 
 
-class Main
-{
+class Main {
 
 
-    public void sumValuesInMap(Map<Integer, Integer> map){
-        Observable.fromIterable(map.entrySet())
+    public int sumValuesInMap(Map<Integer, Integer> map) {
+        return Observable.fromIterable(map.entrySet())
                 // first convert every map entry to the sum of it's
                 // key and value
-                .map(entry -> Entries.withBiFunction(this::sum, entry))
+                .map(Entries.toFunction(this::sum))
                 // then sum all the results
                 .reduce(this::sum)
                 // then get final result

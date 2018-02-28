@@ -63,4 +63,30 @@ public class EntriesTest {
 
     }
 
+    @Test
+    public void toConsumerThenInvokeSuccessfully() throws Exception {
+        final boolean[] result = {false, false};
+        Entries.toConsumer(new BiConsumer<Boolean, Boolean>() {
+            @Override
+            public void accept(Boolean valueOne, Boolean valueTwo) throws Exception {
+                result[0] = valueOne;
+                result[1] = valueTwo;
+            }
+        }).accept(MapEntry.with(true, true).call());
+
+        assertTrue(result[0] && result[1]);
+    }
+
+    @Test
+    public void toFunctionThenInvokeSuccessfully() throws Exception {
+        boolean result = Entries.toFunction(new BiFunction<Boolean, Boolean, Boolean>() {
+            @Override
+            public Boolean apply(Boolean valueOne, Boolean valueTwo) throws Exception {
+                return valueOne && valueTwo;
+            }
+        }).apply(MapEntry.with(true, true).call());
+
+        assertTrue(result);
+    }
+
 }
