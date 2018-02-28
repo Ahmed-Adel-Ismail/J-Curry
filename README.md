@@ -155,6 +155,7 @@ the System.out.printf() takes a "String" as it's first parameter, and an "Intege
 After version 1.0.0, this library supports breaking down Map.Entry and Tuples (Pairs and Triplets) into method parameters, weather in there same order, or in there swapped order (for Pairs only) ... for example :
 
 ```java
+
 public int sumNumbersInPair(Pair<Integer, Integer> numbers) {
     return Tuples.withBiFunction(this::sum, numbers);
 }
@@ -171,6 +172,17 @@ public void printInDescendingOrder(Pair<Integer, Integer> numbers) {
 private void printNumbers(int first, int second) {
     System.out.println(first);
     System.out.println(second);
+}
+
+public void sumMatrix(Map<Integer, Integer> map){
+Observable.fromIterable(map.entrySet())
+        // first convert every map entry to the sum of it's
+        // key and value
+        .map(entry -> Entries.withBiFunction(this::sum, entry))
+        // then sum all the results
+        .reduce(this::sum)
+        // then get final result
+        .blockingGet();
 }
 ```
 
