@@ -174,8 +174,8 @@ private void printNumbers(int first, int second) {
     System.out.println(second);
 }
 
-public int sumMatrix(Map<Integer, Integer> map){
-    return Observable.fromIterable(map.entrySet())
+public int sumMatrix(Map<Integer, Integer> matrix){
+    return Observable.fromIterable(matrix.entrySet())
             // first convert every map entry to the sum of it's
             // key and value
             .map(entry -> Entries.withBiFunction(this::sum, entry))
