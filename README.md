@@ -150,9 +150,9 @@ Observable.fromArray("%d","%02d","%04d")
 
 the System.out.printf() takes a "String" as it's first parameter, and an "Integer" as it's second parameter, what was done here is that, we passed the "Integer" first in the SwapCurry.toConsumer() method, and we receieved the "String" later from the Observable.forEach() method.
 
-# Tuples
+# Tuples and Entries
 
-After version 1.0.0, this library supports breaking down Tuples (Pairs and Triplets) into method parameters, weather in there same order, or in there swapped order (for Pairs only) ... for example :
+After version 1.0.0, this library supports breaking down Map.Entry and Tuples (Pairs and Triplets) into method parameters, weather in there same order, or in there swapped order (for Pairs only) ... for example :
 
 ```java
 public int sumNumbersInPair(Pair<Integer, Integer> numbers) {
