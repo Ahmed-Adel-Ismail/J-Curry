@@ -1,6 +1,11 @@
 package com.functional.curry;
 
 
+import org.javatuples.Pair;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
 import io.reactivex.functions.Action;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.BiFunction;
@@ -35,12 +40,13 @@ import io.reactivex.functions.Predicate;
  * Created by Ahmed Adel Ismail on 6/27/2017.
  */
 public class Curry {
-    
+
     /**
      * curry a {@link Function3}
      *
      * @param function     the {@link Function3} that will be executed
      * @param parameterOne the first parameter
+     * @param parameterTwo the second parameter
      * @param <P1>         the type of the first parameter
      * @param <P2>         the type of the second parameter
      * @param <P3>         the type of the third parameter
@@ -68,6 +74,42 @@ public class Curry {
     public static <P1, P2, P3, R> CurriedFunction<P2, P3, R> toBiFunction(
             Function3<P1, P2, P3, R> function, P1 parameterOne) {
         return new CurriedFunction3<>(function, parameterOne).curry();
+    }
+
+    /**
+     * curry a {@link Function3}
+     *
+     * @param function            the {@link Function3} that will be executed
+     * @param parametersOneAndTwo an {@link Entry} that holds first and second parameter
+     * @param <P1>                the type of the first parameter
+     * @param <P2>                the type of the second parameter
+     * @param <P3>                the type of the third parameter
+     * @param <R>                 the type of the expected result
+     * @return the {@link CurriedFunction} that will be passed the next parameter
+     * later
+     */
+    public static <P1, P2, P3, R> RxFunction<P3, R> toFunction(
+            Function3<P1, P2, P3, R> function, Entry<P1, P2> parametersOneAndTwo) {
+        return toBiFunction(function, parametersOneAndTwo.getKey())
+                .apply(parametersOneAndTwo.getValue());
+    }
+
+    /**
+     * curry a {@link Function3}
+     *
+     * @param function            the {@link Function3} that will be executed
+     * @param parametersOneAndTwo a {@link Pair} that holds first and second parameter
+     * @param <P1>                the type of the first parameter
+     * @param <P2>                the type of the second parameter
+     * @param <P3>                the type of the third parameter
+     * @param <R>                 the type of the expected result
+     * @return the {@link CurriedFunction} that will be passed the next parameter
+     * later
+     */
+    public static <P1, P2, P3, R> RxFunction<P3, R> toFunction(
+            Function3<P1, P2, P3, R> function, Pair<P1, P2> parametersOneAndTwo) {
+        return toBiFunction(function, parametersOneAndTwo.getValue0())
+                .apply(parametersOneAndTwo.getValue1());
     }
 
     /**
@@ -165,6 +207,42 @@ public class Curry {
     public static <P1, P2, P3> RxPredicate<P3> toPredicate(
             Function3<P1, P2, P3, Boolean> function, P1 parameterOne, P2 parameterTwo) {
         return new CurriedPredicate3<>(function, parameterOne).curry().apply(parameterTwo);
+    }
+
+    /**
+     * curry a {@link Function3} with a {@link Boolean} return type as a {@link Predicate}
+     *
+     * @param function            the {@link Function3} that will be executed
+     * @param parametersOneAndTwo an {@link Entry} that holds first and second parameter
+     * @param <P1>                the type of the first parameter
+     * @param <P2>                the type of the second parameter
+     * @param <P3>                the type of the third parameter
+     * @return the {@link CurriedFunction} that will be passed the next parameter
+     * later
+     */
+    public static <P1, P2, P3> RxPredicate<P3> toPredicate(
+            Function3<P1, P2, P3, Boolean> function, Entry<P1, P2> parametersOneAndTwo) {
+        return new CurriedPredicate3<>(function, parametersOneAndTwo.getKey())
+                .curry()
+                .apply(parametersOneAndTwo.getValue());
+    }
+
+    /**
+     * curry a {@link Function3} with a {@link Boolean} return type as a {@link Predicate}
+     *
+     * @param function            the {@link Function3} that will be executed
+     * @param parametersOneAndTwo an {@link Pair} that holds first and second parameter
+     * @param <P1>                the type of the first parameter
+     * @param <P2>                the type of the second parameter
+     * @param <P3>                the type of the third parameter
+     * @return the {@link CurriedFunction} that will be passed the next parameter
+     * later
+     */
+    public static <P1, P2, P3> RxPredicate<P3> toPredicate(
+            Function3<P1, P2, P3, Boolean> function, Pair<P1, P2> parametersOneAndTwo) {
+        return new CurriedPredicate3<>(function, parametersOneAndTwo.getValue0())
+                .curry()
+                .apply(parametersOneAndTwo.getValue1());
     }
 
     /**
