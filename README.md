@@ -174,15 +174,15 @@ private void printNumbers(int first, int second) {
     System.out.println(second);
 }
 
-public void sumMatrix(Map<Integer, Integer> map){
-Observable.fromIterable(map.entrySet())
-        // first convert every map entry to the sum of it's
-        // key and value
-        .map(entry -> Entries.withBiFunction(this::sum, entry))
-        // then sum all the results
-        .reduce(this::sum)
-        // then get final result
-        .blockingGet();
+public int sumMatrix(Map<Integer, Integer> map){
+    return Observable.fromIterable(map.entrySet())
+            // first convert every map entry to the sum of it's
+            // key and value
+            .map(entry -> Entries.withBiFunction(this::sum, entry))
+            // then sum all the results
+            .reduce(this::sum)
+            // then get final result
+            .blockingGet();
 }
 ```
 
