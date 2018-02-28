@@ -1,5 +1,6 @@
 package com.functional.curry;
 
+import org.javatuples.Pair;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -76,11 +77,29 @@ public class CurryTest {
     }
 
     @Test
-    public void toPredicateFromFunction3() throws Exception {
+    public void toPredicateFromFunction3WithTwoParameters() throws Exception {
         Ref r1 = new Ref();
         Ref r2 = new Ref();
         Ref r3 = new Ref();
         Curry.toPredicate(booleanFunction3(), r1, r2).test(r3);
+        assertTrue(r1.value && r2.value && r3.value);
+    }
+
+    @Test
+    public void toPredicateFromFunction3WithPair() throws Exception {
+        Ref r1 = new Ref();
+        Ref r2 = new Ref();
+        Ref r3 = new Ref();
+        Curry.toPredicate(booleanFunction3(), Pair.with(r1,r2)).test(r3);
+        assertTrue(r1.value && r2.value && r3.value);
+    }
+
+    @Test
+    public void toPredicateFromFunction3WithMapEntry() throws Exception {
+        Ref r1 = new Ref();
+        Ref r2 = new Ref();
+        Ref r3 = new Ref();
+        Curry.toPredicate(booleanFunction3(), MapEntry.with(r1,r2).call()).test(r3);
         assertTrue(r1.value && r2.value && r3.value);
     }
 
@@ -195,8 +214,24 @@ public class CurryTest {
     }
 
     @Test
-    public void toFunctionFromFunction3Successfully() throws Exception {
+    public void toFunctionFromFunction3WithTwoParametersSuccessfully() throws Exception {
         Function<Integer, String> stringWithSpace = Curry.toFunction(formatter(), 0, " ");
+        List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
+        assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
+    }
+
+    @Test
+    public void toFunctionFromFunction3WithPairSuccessfully() throws Exception {
+        Function<Integer, String> stringWithSpace =
+                Curry.toFunction(formatter(), Pair.with(0," "));
+        List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
+        assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
+    }
+
+    @Test
+    public void toFunctionFromFunction3WithMapEntrySuccessfully() throws Exception {
+        Function<Integer, String> stringWithSpace =
+                Curry.toFunction(formatter(), MapEntry.with(0," ").call());
         List<String> strings = Observable.fromArray(1, 2).map(stringWithSpace).toList().blockingGet();
         assertTrue(strings.get(0).equals("0 1") && strings.get(1).equals("0 2"));
     }
