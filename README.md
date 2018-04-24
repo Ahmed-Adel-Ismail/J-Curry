@@ -59,19 +59,40 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-    
+
 so what happened to the thrown Exception ?
 
     Curried functions does not throw exceptions other than RuntimeException,
     if there execution method threw an Exception, it will be wrapped in a
     RuntimeException, else it will throw the sub-class of the RuntimeException that
     was already thrown by the executing function    
-    
-# Usage with RxJava2 Operators through functional interfaces
+
+# More Functional interfaces that enable currying and partial application by default
+
+Also there are interfaces like <b>RxBiFunction, RxFunction3, RxFunction4, RxBiConsumer, RxConsumer3, RxConsumer4, RxBiPredicate, RxPredicate3, RxPredicate4</b> ... those functions enables currying and partial applying by default, as they follow the deep concepts of functional programming, where functions should have one and only parameter, so each parameter passed to those functions, returns another function awaiting for the next parameter, and so on ... using lambdas and method references is highly recommended when implementing these interfaces ... and example is as follows :
+
+```java
+
+// RxJava2 used here :
+String concatenateOneAndTwo() {
+    return Single.just(2)
+            .map(concatenateTwoNumbers().apply(1))
+            .blockingGet();
+}
+
+RxBiFunction<Integer, Integer, String> concatenateTwoNumbers() {
+    return intOne -> intTwo -> intOne + " and " + intTwo;
+}
+
+```
+
+As you can see. when we used concatenateTwoNumbers() and passed it's first Integer parameter, it returned another function that takes an Integer and returns a String ... so we passed the this new function to the map() operator, since it is waiting for a function that takes an Integer and returns a String as well (same signature)
+
+# Usage with RxJava2 Operators in Java 7 :
 
 The greatest benefit from such library is to use with RxJava2 operators, since it uses the RxJava interfaces (Consumer, Function, Predicate).
 
-exmaples from CurryTest.java in version 0.0.1 :
+examples from CurryTest.java in version 0.0.1 :
 
 use in map() operator :
 
@@ -124,7 +145,7 @@ private BiPredicate<Integer, Integer> remainderFilter() {
 
 and so on ... since every Curry method returns a Functional interface that awaits single parameter, this is perfectly usable in RxJava2 operators 
 
-# Usage with RxJava2 Operators through method reference (using Retrolambda)
+# Usage with RxJava2 Operators through lambdas and method references in Java 8 (or using Retrolambda in Java 7) :
 
 ```java
 Observable.fromCallable()
@@ -140,7 +161,7 @@ Observable.fromArray(1,2,3,4)
 
 notice that Currying now can work on any function in any class, and now it does not require implementing functional interfaces any more
 
-# SwapCurry ... where the fun begins
+# SwapCurry ... where the fun begins (<b>flip</b> in Haskell)
 after version 0.0.3, it is possible to swap the parameters of the curried function, so we can pass the second parameter of the method first, and the curried function will return another function that expects to receive the first parameter of the original method, then it executes, like in the following example :
 
 ```java
