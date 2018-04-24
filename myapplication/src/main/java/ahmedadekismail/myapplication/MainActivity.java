@@ -6,7 +6,10 @@ import android.util.Log;
 
 import com.functional.curry.Curry;
 import com.functional.curry.Entries;
+import com.functional.curry.RxBiFunction;
 import com.functional.curry.RxConsumer;
+import com.functional.curry.RxFunction;
+import com.functional.curry.RxFunction3;
 import com.functional.curry.SwapTuples;
 import com.functional.curry.Tuples;
 
@@ -15,6 +18,7 @@ import org.javatuples.Pair;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,12 +38,8 @@ class Main {
 
     public int sumValuesInMap(Map<Integer, Integer> map) {
         return Observable.fromIterable(map.entrySet())
-                // first convert every map entry to the sum of it's
-                // key and value
                 .map(Entries.toFunction(this::sum))
-                // then sum all the results
                 .reduce(this::sum)
-                // then get final result
                 .blockingGet();
     }
 
@@ -61,5 +61,15 @@ class Main {
         System.out.println(second);
     }
 
+
+    String concatenateOneAndTwo() {
+        return Single.just(2)
+                .map(concatenateTwoNumbers().apply(1))
+                .blockingGet();
+    }
+
+    private RxBiFunction<Integer, Integer, String> concatenateTwoNumbers() {
+        return intOne -> intTwo -> intOne + " and " + intTwo;
+    }
 
 }

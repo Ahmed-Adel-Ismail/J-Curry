@@ -221,6 +221,6 @@ Step 2. Add the dependency
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.2.0'
+    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.3.0'
 }
 ```
