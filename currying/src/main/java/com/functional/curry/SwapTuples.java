@@ -42,11 +42,7 @@ public class SwapTuples {
      * @param <T2>       the type of the second parameter
      */
     public static <T1, T2> void withBiConsumer(BiConsumer<T1, T2> biConsumer, Pair<T2, T1> pair) {
-        try {
-            biConsumer.accept(pair.getValue1(), pair.getValue0());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        Invoker.invoke(biConsumer, pair.getValue1(), pair.getValue0());
     }
 
     /**
@@ -82,10 +78,6 @@ public class SwapTuples {
      * @return the result of the passed {@link BiFunction}
      */
     public static <T1, T2, R> R withBiFunction(BiFunction<T1, T2, R> biFunction, Pair<T2, T1> pair) {
-        try {
-            return biFunction.apply(pair.getValue1(), pair.getValue0());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(biFunction, pair.getValue1(), pair.getValue0());
     }
 }

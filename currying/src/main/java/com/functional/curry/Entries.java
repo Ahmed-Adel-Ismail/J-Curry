@@ -40,11 +40,7 @@ public class Entries {
      * @param <T2>       the type of the second parameter
      */
     public static <T1, T2> void withBiConsumer(BiConsumer<T1, T2> biConsumer, Entry<T1, T2> entry) {
-        try {
-            biConsumer.accept(entry.getKey(), entry.getValue());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        Invoker.invoke(biConsumer, entry.getKey(), entry.getValue());
     }
 
     /**
@@ -80,11 +76,7 @@ public class Entries {
      * @return the result of the passed {@link BiFunction}
      */
     public static <T1, T2, R> R withBiFunction(BiFunction<T1, T2, R> biFunction, Entry<T1, T2> entry) {
-        try {
-            return biFunction.apply(entry.getKey(), entry.getValue());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(biFunction, entry.getKey(), entry.getValue());
     }
 
 }

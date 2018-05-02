@@ -9,8 +9,7 @@ import io.reactivex.functions.BiPredicate;
  * <p>
  * Created by Ahmed Adel Ismail on 6/26/2017.
  */
-class CurriedBiPredicate<ParameterOne, ParameterTwo> implements RxPredicate<ParameterTwo>
-{
+class CurriedBiPredicate<ParameterOne, ParameterTwo> implements RxPredicate<ParameterTwo> {
     private final BiPredicate<ParameterOne, ParameterTwo> biPredicate;
     private final ParameterOne parameterOne;
 
@@ -23,11 +22,6 @@ class CurriedBiPredicate<ParameterOne, ParameterTwo> implements RxPredicate<Para
 
     @Override
     public boolean test(@NonNull ParameterTwo parameterTwo) {
-        try {
-            return biPredicate.test(parameterOne, parameterTwo);
-        }
-        catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(biPredicate, parameterOne, parameterTwo);
     }
 }

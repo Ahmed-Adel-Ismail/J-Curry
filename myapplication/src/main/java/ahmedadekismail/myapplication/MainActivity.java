@@ -12,6 +12,7 @@ import com.functional.curry.RxFunction;
 import com.functional.curry.RxFunction3;
 import com.functional.curry.SwapTuples;
 import com.functional.curry.Tuples;
+import com.functional.types.Either;
 
 import org.javatuples.Pair;
 
@@ -70,6 +71,24 @@ class Main {
 
     private RxBiFunction<Integer, Integer, String> concatenateTwoNumbers() {
         return intOne -> intTwo -> intOne + " and " + intTwo;
+    }
+
+
+    public static void main(String[] args) {
+        castInteger("test")
+                .mapRight(String::valueOf)
+                .mapRight(text -> text + " --- ")
+                .mapLeft(ex -> new RuntimeException(ex.getMessage()));
+
+
+    }
+
+    private static Either<ClassCastException,Integer> castInteger(Object intValue){
+        try{
+            return Either.withRight((int)intValue);
+        }catch (ClassCastException e){
+            return Either.withLeft(e);
+        }
     }
 
 }

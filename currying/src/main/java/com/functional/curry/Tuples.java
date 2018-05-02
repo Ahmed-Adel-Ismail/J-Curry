@@ -30,11 +30,7 @@ public class Tuples {
      */
     public static <T1, T2, T3, R> R withFunction3(Function3<T1, T2, T3, R> function3,
                                                   Triplet<T1, T2, T3> triplet) {
-        try {
-            return function3.apply(triplet.getValue0(), triplet.getValue1(), triplet.getValue2());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(function3, triplet.getValue0(), triplet.getValue1(), triplet.getValue2());
     }
 
     /**
@@ -64,11 +60,7 @@ public class Tuples {
      * @param <T2>       the type of the second parameter
      */
     public static <T1, T2> void withBiConsumer(BiConsumer<T1, T2> biConsumer, Pair<T1, T2> pair) {
-        try {
-            biConsumer.accept(pair.getValue0(), pair.getValue1());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        Invoker.invoke(biConsumer, pair.getValue0(), pair.getValue1());
     }
 
     /**
@@ -104,11 +96,7 @@ public class Tuples {
      * @return the result of the passed {@link BiFunction}
      */
     public static <T1, T2, R> R withBiFunction(BiFunction<T1, T2, R> biFunction, Pair<T1, T2> pair) {
-        try {
-            return biFunction.apply(pair.getValue0(), pair.getValue1());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(biFunction, pair.getValue0(), pair.getValue1());
     }
 
 }

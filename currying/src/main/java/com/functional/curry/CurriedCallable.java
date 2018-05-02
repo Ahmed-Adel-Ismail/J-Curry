@@ -20,10 +20,6 @@ class CurriedCallable<ParameterOne, Return> implements RxCallable<Return> {
 
     @Override
     public Return call() {
-        try {
-            return function.apply(parameterOne);
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(function, parameterOne);
     }
 }

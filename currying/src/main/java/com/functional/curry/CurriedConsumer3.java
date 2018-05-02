@@ -12,8 +12,8 @@ import io.reactivex.functions.Function3;
  * <p>
  * Created by Ahmed Adel Ismail on 7/26/2017.
  */
-public class CurriedConsumer3<T1, T2, T3> implements RxConsumer<T3>
-{
+public class CurriedConsumer3<T1, T2, T3> implements RxConsumer<T3> {
+
     private final boolean executable;
     private final Function3<T1, T2, T3, Void> function3;
     private final T1 parameterOne;
@@ -36,19 +36,9 @@ public class CurriedConsumer3<T1, T2, T3> implements RxConsumer<T3>
 
     @Override
     public void accept(@NonNull T3 parameterThree) {
-        try {
-            doApply(parameterThree);
-        }
-        catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
-    }
-
-    private Void doApply(@NonNull T3 parameterThree) throws Exception {
         if (executable) {
-            return function3.apply(parameterOne, parameterTwo, parameterThree);
-        }
-        else {
+            Invoker.invoke(function3, parameterOne, parameterTwo, parameterThree);
+        } else {
             throw new IllegalArgumentException("second parameter not set");
         }
     }
@@ -60,8 +50,7 @@ public class CurriedConsumer3<T1, T2, T3> implements RxConsumer<T3>
      * @return a curried version of this function
      */
     CurriedConsumer<T2, T3> curry() {
-        return new CurriedConsumer<T2, T3>()
-        {
+        return new CurriedConsumer<T2, T3>() {
             @Override
             public RxConsumer<T3> apply(@NonNull T2 parameterTwo) {
                 return new CurriedConsumer3<>(function3, parameterOne, parameterTwo);

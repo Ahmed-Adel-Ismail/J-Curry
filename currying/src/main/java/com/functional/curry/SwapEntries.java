@@ -42,11 +42,7 @@ public class SwapEntries {
      * @param <T2>       the type of the second parameter
      */
     public static <T1, T2> void withBiConsumer(BiConsumer<T1, T2> biConsumer, Entry<T2, T1> entry) {
-        try {
-            biConsumer.accept(entry.getValue(), entry.getKey());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        Invoker.invoke(biConsumer, entry.getValue(), entry.getKey());
     }
 
     /**
@@ -82,10 +78,6 @@ public class SwapEntries {
      * @return the result of the passed {@link BiFunction}
      */
     public static <T1, T2, R> R withBiFunction(BiFunction<T1, T2, R> biFunction, Entry<T2, T1> entry) {
-        try {
-            return biFunction.apply(entry.getValue(), entry.getKey());
-        } catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        return Invoker.invoke(biFunction, entry.getValue(), entry.getKey());
     }
 }

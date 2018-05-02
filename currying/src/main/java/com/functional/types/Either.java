@@ -1,9 +1,12 @@
 package com.functional.types;
 
+import com.functional.curry.Invoker;
 import com.functional.curry.RxBiConsumer;
-import com.functional.curry.RxBiFunction;
 import com.functional.curry.RxConsumer;
 import com.functional.curry.RxFunction;
+
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * a data structure that will hold one of two values, the left value indicates the error value, and
@@ -48,17 +51,18 @@ public class Either<L extends Exception, R> {
         }
     }
 
-    public RxBiConsumer<RxConsumer<L>, RxConsumer<R>> fold() {
-        return new RxBiConsumer<RxConsumer<L>, RxConsumer<R>>() {
+    public RxBiConsumer<Consumer<L>, Consumer<R>> fold() {
+        return new RxBiConsumer<Consumer<L>, Consumer<R>>() {
+
             @Override
-            public RxConsumer<RxConsumer<R>> apply(final RxConsumer<L> leftOption) {
-                return new RxConsumer<RxConsumer<R>>() {
+            public RxConsumer<Consumer<R>> apply(final Consumer<L> leftOption) {
+                return new RxConsumer<Consumer<R>>() {
                     @Override
-                    public void accept(RxConsumer<R> rightOption) {
+                    public void accept(Consumer<R> rightOption) {
                         if (left != null) {
-                            leftOption.accept(left);
+                            Invoker.invoke(leftOption, left);
                         } else {
-                            rightOption.accept(right);
+                            Invoker.invoke(rightOption, right);
                         }
                     }
                 };
@@ -67,10 +71,10 @@ public class Either<L extends Exception, R> {
 
     }
 
-    public <V> RxFunction<RxFunction<R, V>, V> flatMap(final RxFunction<L, V> leftFlatMapper) {
-        return new RxFunction<RxFunction<R, V>, V>() {
+    public <V> RxFunction<Function<R, V>, V> flatMap(final Function<L, V> leftFlatMapper) {
+        return new RxFunction<Function<R, V>, V>() {
             @Override
-            public V apply(RxFunction<R, V> rightFlatMapper) {
+            public V apply(Function<R, V> rightFlatMapper) {
                 if (left != null) {
                     return nonNullMapper(leftFlatMapper, left);
                 } else {
@@ -80,10 +84,8 @@ public class Either<L extends Exception, R> {
         };
     }
 
-    ;
-
-    private <T, V> V nonNullMapper(RxFunction<T, V> mapper, T oldValue) {
-        V result = mapper.apply(oldValue);
+    private <T, V> V nonNullMapper(Function<T, V> mapper, T oldValue) {
+        V result = Invoker.invoke(mapper, oldValue);
         if (result == null) throw new NullPointerException("null values not accepted");
         return result;
     }
@@ -103,5 +105,6 @@ public class Either<L extends Exception, R> {
             return new Either<>(null, nonNullMapper(mapper, right));
         }
     }
+
 
 }

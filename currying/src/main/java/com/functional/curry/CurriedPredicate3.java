@@ -11,8 +11,7 @@ import io.reactivex.functions.Predicate;
  * <p>
  * Created by Ahmed Adel Ismail on 7/26/2017.
  */
-public class CurriedPredicate3<T1, T2, T3> implements RxPredicate<T3>
-{
+public class CurriedPredicate3<T1, T2, T3> implements RxPredicate<T3> {
     private final boolean executable;
     private final Function3<T1, T2, T3, Boolean> function3;
     private final T1 parameterOne;
@@ -35,19 +34,9 @@ public class CurriedPredicate3<T1, T2, T3> implements RxPredicate<T3>
 
     @Override
     public boolean test(@NonNull T3 parameterThree) {
-        try {
-            return doApply(parameterThree);
-        }
-        catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
-    }
-
-    private Boolean doApply(@NonNull T3 parameterThree) throws Exception {
         if (executable) {
-            return function3.apply(parameterOne, parameterTwo, parameterThree);
-        }
-        else {
+            return Invoker.invoke(function3, parameterOne, parameterTwo, parameterThree);
+        } else {
             throw new IllegalArgumentException("second parameter not set");
         }
     }
@@ -59,8 +48,7 @@ public class CurriedPredicate3<T1, T2, T3> implements RxPredicate<T3>
      * @return a curried version of this function
      */
     CurriedPredicate<T2, T3> curry() {
-        return new CurriedPredicate<T2, T3>()
-        {
+        return new CurriedPredicate<T2, T3>() {
             @Override
             public RxPredicate<T3> apply(@NonNull T2 parameterTwo) {
                 return new CurriedPredicate3<>(function3, parameterOne, parameterTwo);

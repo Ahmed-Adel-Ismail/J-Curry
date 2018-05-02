@@ -10,8 +10,7 @@ import io.reactivex.functions.BiConsumer;
  * Created by Ahmed Adel Ismail on 6/26/2017.
  */
 class CurriedBiConsumer<ParameterOne, ParameterTwo>
-        implements RxConsumer<ParameterTwo>
-{
+        implements RxConsumer<ParameterTwo> {
     private final BiConsumer<ParameterOne, ParameterTwo> biConsumer;
     private final ParameterOne parameterOne;
 
@@ -23,11 +22,6 @@ class CurriedBiConsumer<ParameterOne, ParameterTwo>
 
     @Override
     public void accept(@NonNull ParameterTwo parameterTwo) {
-        try {
-            biConsumer.accept(parameterOne, parameterTwo);
-        }
-        catch (Throwable e) {
-            throw new RuntimeExceptionConverter().apply(e);
-        }
+        Invoker.invoke(biConsumer, parameterOne, parameterTwo);
     }
 }
