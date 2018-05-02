@@ -8,16 +8,16 @@ import com.functional.curry.Curry;
 import com.functional.curry.Entries;
 import com.functional.curry.RxBiFunction;
 import com.functional.curry.RxConsumer;
-import com.functional.curry.RxFunction;
-import com.functional.curry.RxFunction3;
 import com.functional.curry.SwapTuples;
 import com.functional.curry.Tuples;
 import com.functional.types.Either;
+import com.functional.types.Try;
 
 import org.javatuples.Pair;
 
 import java.util.Map;
 
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -75,20 +75,34 @@ class Main {
 
 
     public static void main(String[] args) {
-        castInteger("test")
-                .mapRight(String::valueOf)
-                .mapRight(text -> text + " --- ")
-                .mapLeft(ex -> new RuntimeException(ex.getMessage()));
+
+        System.out.println(castedIntToString());
+        cast("test")
+                .map(integer -> integer * 100)
+                .flatMap(Maybe::just, Maybe::error);
 
 
     }
 
-    private static Either<ClassCastException,Integer> castInteger(Object intValue){
-        try{
-            return Either.withRight((int)intValue);
-        }catch (ClassCastException e){
+    private static String castedIntToString() {
+        return castInteger("test")
+                .mapRight(String::valueOf)
+                .mapRight(text -> text + " --- ")
+                .mapLeft(ex -> new RuntimeException(ex.getMessage()))
+                .flatMap(Try::with)
+                .getOrElse(ex -> "casting failed");
+    }
+
+    private static Either<ClassCastException, Integer> castInteger(Object intValue) {
+        try {
+            return Either.withRight((int) intValue);
+        } catch (ClassCastException e) {
             return Either.withLeft(e);
         }
+    }
+
+    private static Try<Integer> cast(Object intValue) {
+        return Try.with(() -> (int) intValue);
     }
 
 }

@@ -5,6 +5,8 @@ import com.functional.curry.RxBiConsumer;
 import com.functional.curry.RxConsumer;
 import com.functional.curry.RxFunction;
 
+import java.util.concurrent.Callable;
+
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
@@ -15,7 +17,7 @@ import io.reactivex.functions.Function;
  * @param <L> the left value type - usually this is the error type
  * @param <R> the right value type, usually this is the success type
  */
-public class Either<L extends Exception, R> {
+public class Either<L extends Exception, R> implements Callable<R> {
 
     private final L left;
     private final R right;
@@ -39,8 +41,15 @@ public class Either<L extends Exception, R> {
         return left != null;
     }
 
-    public boolean isRight() {
-        return right != null;
+    /**
+     * same as {@link #getRightOrCrash()}
+     *
+     * @return the value on the right if available
+     * @throws L the value on the left if available
+     */
+    @Override
+    public R call() throws L {
+        return getRightOrCrash();
     }
 
     public R getRightOrCrash() throws L {
@@ -71,17 +80,20 @@ public class Either<L extends Exception, R> {
 
     }
 
-    public <V> RxFunction<Function<R, V>, V> flatMap(final Function<L, V> leftFlatMapper) {
-        return new RxFunction<Function<R, V>, V>() {
-            @Override
-            public V apply(Function<R, V> rightFlatMapper) {
-                if (left != null) {
-                    return nonNullMapper(leftFlatMapper, left);
-                } else {
-                    return nonNullMapper(rightFlatMapper, right);
-                }
-            }
-        };
+    public <V> V flatMap(Function<Either<L, R>, V> converter) {
+        return Invoker.invoke(converter, this);
+    }
+
+    public boolean isRight() {
+        return right != null;
+    }
+
+    public <V> V flatMap(Function<L, V> leftFlatMapper, Function<R, V> rightFlatMapper) {
+        if (left != null) {
+            return nonNullMapper(leftFlatMapper, left);
+        } else {
+            return nonNullMapper(rightFlatMapper, right);
+        }
     }
 
     private <T, V> V nonNullMapper(Function<T, V> mapper, T oldValue) {
@@ -105,6 +117,5 @@ public class Either<L extends Exception, R> {
             return new Either<>(null, nonNullMapper(mapper, right));
         }
     }
-
 
 }

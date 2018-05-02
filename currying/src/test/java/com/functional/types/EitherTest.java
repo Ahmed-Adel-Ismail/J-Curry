@@ -7,6 +7,8 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
+import io.reactivex.functions.Function;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -85,8 +87,7 @@ public class EitherTest {
                     public String apply(Exception e) {
                         return "";
                     }
-                })
-                .apply(new RxFunction<Integer, String>() {
+                }, new RxFunction<Integer, String>() {
                     @Override
                     public String apply(Integer integer) {
                         return String.valueOf(integer);
@@ -104,8 +105,7 @@ public class EitherTest {
                     public String apply(Exception e) {
                         return e.getMessage();
                     }
-                })
-                .apply(new RxFunction<Object, String>() {
+                }, new RxFunction<Object, String>() {
                     @Override
                     public String apply(Object integer) {
                         return "";
@@ -138,5 +138,18 @@ public class EitherTest {
                 .getRightOrCrash();
 
         assertEquals("10", result);
+    }
+
+    @Test
+    public void flatMapEitherToRightWithRightEitherThenReturnValue() {
+        int result = Either.withRight(10)
+                .flatMap(new Function<Either<Exception, Integer>, Integer>() {
+                    @Override
+                    public Integer apply(Either<Exception, Integer> either) throws Exception {
+                        return either.call();
+                    }
+                });
+
+        assertEquals(10, result);
     }
 }

@@ -245,6 +245,6 @@ Step 2. Add the dependency
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.4.0'
+    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.5.0'
 }
 ```
