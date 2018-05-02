@@ -12,7 +12,7 @@ import com.functional.curry.RxFunction;
  * @param <L> the left value type - usually this is the error type
  * @param <R> the right value type, usually this is the success type
  */
-public class Either<L extends Throwable, R> {
+public class Either<L extends Exception, R> {
 
     private final L left;
     private final R right;
@@ -22,12 +22,12 @@ public class Either<L extends Throwable, R> {
         this.right = right;
     }
 
-    public static <L extends Throwable> Either<L, ?> withLeft(L leftValue) throws NullPointerException {
+    public static <L extends Exception, R> Either<L, R> withLeft(L leftValue) throws NullPointerException {
         if (leftValue == null) throw new NullPointerException("null values not accepted");
         return new Either<>(leftValue, null);
     }
 
-    public static <R> Either<?, R> withRight(R rightValue) throws NullPointerException {
+    public static <L extends Exception, R> Either<L, R> withRight(R rightValue) throws NullPointerException {
         if (rightValue == null) throw new NullPointerException("null values not accepted");
         return new Either<>(null, rightValue);
     }
@@ -67,23 +67,20 @@ public class Either<L extends Throwable, R> {
 
     }
 
-    public <V> RxBiFunction<RxFunction<L, V>, RxFunction<R, V>, V> flatMap() {
-        return new RxBiFunction<RxFunction<L, V>, RxFunction<R, V>, V>() {
+    public <V> RxFunction<RxFunction<R, V>, V> flatMap(final RxFunction<L, V> leftFlatMapper) {
+        return new RxFunction<RxFunction<R, V>, V>() {
             @Override
-            public RxFunction<RxFunction<R, V>, V> apply(final RxFunction<L, V> leftFlatMapper) {
-                return new RxFunction<RxFunction<R, V>, V>() {
-                    @Override
-                    public V apply(RxFunction<R, V> rightFlatMapper) {
-                        if (left != null) {
-                            return nonNullMapper(leftFlatMapper, left);
-                        } else {
-                            return nonNullMapper(rightFlatMapper, right);
-                        }
-                    }
-                };
+            public V apply(RxFunction<R, V> rightFlatMapper) {
+                if (left != null) {
+                    return nonNullMapper(leftFlatMapper, left);
+                } else {
+                    return nonNullMapper(rightFlatMapper, right);
+                }
             }
         };
     }
+
+    ;
 
     private <T, V> V nonNullMapper(RxFunction<T, V> mapper, T oldValue) {
         V result = mapper.apply(oldValue);
@@ -91,7 +88,7 @@ public class Either<L extends Throwable, R> {
         return result;
     }
 
-    public <V extends Throwable> Either<V, R> mapleft(RxFunction<L, V> mapper) {
+    public <V extends Exception> Either<V, R> mapLeft(RxFunction<L, V> mapper) {
         if (left == null) {
             return new Either<>(null, right);
         } else {

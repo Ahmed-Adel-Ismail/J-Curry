@@ -225,6 +225,9 @@ public int sumValuesInMap(Map<Integer, Integer> matrix) {
             .blockingGet();
 }
 ```
+# Types
+starting from version 1.4.0, the library supports types, the first type is <b>Either</b>, which holds either a value or an Error, now it is available with it's <b>map(), flatMap()</b> and <b>fold()</b> methods
+
 # Adding gradle dependency
 
 Step 1. Add it in your root build.gradle at the end of repositories:
@@ -242,6 +245,6 @@ Step 2. Add the dependency
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.3.0'
+    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.4.0'
 }
 ```
