@@ -226,7 +226,43 @@ public int sumValuesInMap(Map<Integer, Integer> matrix) {
 }
 ```
 # Types
-starting from version 1.4.0, the library supports types, the first type is <b>Either</b>, which holds either a value or an Error, now it is available with it's <b>map(), flatMap()</b> and <b>fold()</b> methods
+The library now supports Functional types, each type has it's functional APIs like <b>map()</b>, <b>flatMap()</b>, etc...
+
+<b>Either</b> : A type that will either hold a correct value (right) or an error value (left) ... the main point for <b>Either</b> is to delegate handling errors to the callers, so they are in control of what happens on error (inversion of control)
+
+```java
+
+Either<ClassCastException, String> castedIntToString() {
+    return castInteger("test")
+            .mapRight(String::valueOf)
+            .mapRight(text -> text + " --- ");
+}
+
+
+Either<ClassCastException, Integer> castInteger(Object intValue) {
+    try {
+        return Either.withRight((int) intValue);
+    } catch (ClassCastException e) {
+        return Either.withLeft(e);
+    }
+}
+
+```
+
+
+<b>Try</b> : A type that will take a <b>Callable</b>, and will hold the value of it's execution or it's exception ... so instead of using try/catch blocks, you can make a your methods return the Try Object, and let the control for who called the method ... the main point of <b>Try</b> is to handle exceptions in a Functional fashion, without try/catch blocks, so we can invoke multiple operations on the values and if it crashed, the operations are ignored, and we can notice weather there is a success or failure at the end
+
+```java
+
+void castInteger(Object intValue) {
+    Try.with(() -> (int) intValue)
+            .map(integer -> integer * 100)
+            .flatMap(Single::just, Single::error)  // convert to RxJava Single
+            .subscribe(System.out::println,Throwable::printStackTrace);
+}
+
+```
+
 
 # Adding gradle dependency
 

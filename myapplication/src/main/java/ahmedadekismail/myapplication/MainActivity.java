@@ -77,20 +77,15 @@ class Main {
     public static void main(String[] args) {
 
         System.out.println(castedIntToString());
-        cast("test")
-                .map(integer -> integer * 100)
-                .flatMap(Maybe::just, Maybe::error);
 
 
     }
 
-    private static String castedIntToString() {
+    private static Either<ClassCastException, String> castedIntToString() {
         return castInteger("test")
                 .mapRight(String::valueOf)
-                .mapRight(text -> text + " --- ")
-                .mapLeft(ex -> new RuntimeException(ex.getMessage()))
-                .flatMap(Try::with)
-                .getOrElse(ex -> "casting failed");
+                .mapRight(text -> text + " --- ");
+
     }
 
     private static Either<ClassCastException, Integer> castInteger(Object intValue) {
@@ -101,8 +96,12 @@ class Main {
         }
     }
 
-    private static Try<Integer> cast(Object intValue) {
-        return Try.with(() -> (int) intValue);
+    private void cast(Object intValue) {
+        Try.with(() -> (int) intValue)
+                .map(integer -> integer * 100)
+                .flatMap(Single::just, Single::error)
+                .subscribe(System.out::println,Throwable::printStackTrace);
+
     }
 
 }
