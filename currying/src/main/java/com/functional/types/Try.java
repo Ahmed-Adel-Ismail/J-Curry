@@ -7,6 +7,16 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Function;
 
+/**
+ * a data type that takes a <b>Callable</b>, and will hold the value of it's
+ * execution or it's exception ... so instead of using try/catch blocks, you can make a your
+ * methods return the Try Object, and let the control for who called the method ...
+ * the main point of <b>Try</b> is to handle exceptions in a Functional fashion,
+ * without try/catch blocks, so we can invoke multiple operations on the values and if it crashed,
+ * the operations are ignored, and we can notice weather there is a success or failure at the end
+ *
+ * @param <T> the type of the value
+ */
 public class Try<T> implements Callable<T> {
 
     private final T value;
@@ -52,6 +62,12 @@ public class Try<T> implements Callable<T> {
         return getOrCrash();
     }
 
+    /**
+     * get the value if available
+     *
+     * @return the value if available
+     * @throws Exception the {@link Exception} that was thrown if the value is not available
+     */
     public T getOrCrash() throws Exception {
         if (exception == null) {
             return value;
@@ -60,6 +76,15 @@ public class Try<T> implements Callable<T> {
         }
     }
 
+    /**
+     * get the value if available, or the result of the passed {@link Function} if the value was
+     * not achieved successfully from the passed {@link Callable}
+     *
+     * @param failureExpression the fallback {@link Function} that will be executed if the value was
+     *                          not achieved successfully from the passed {@link Callable} to
+     *                          {@link #with(Callable)}
+     * @return the original value, or the failureExpression {@link Function} returned value
+     */
     public T getOrElse(Function<Exception, T> failureExpression) {
         if (value != null) {
             return value;
@@ -68,6 +93,15 @@ public class Try<T> implements Callable<T> {
         }
     }
 
+    /**
+     * convert the value in this {@link Try} into another value if available, else the operation
+     * will be skipped
+     *
+     * @param mapper the {@link Function} that will convert the value if available
+     * @param <R>    the type of the expected new value
+     * @return a {@link Try} holding the new value, or holding a {@link Exception} if there
+     * was no value from the beginning
+     */
     public <R> Try<R> map(Function<T, R> mapper) {
         if (value != null) {
             return Try.with(Curry.toCallable(mapper, value));
@@ -88,10 +122,27 @@ public class Try<T> implements Callable<T> {
         return new Try<>(expression);
     }
 
-    public <R> R flatMap(Function<Try<T>, R> converter) {
-        return Invoker.invoke(converter, this);
+    /**
+     * convert this {@link Try} instance into another Object
+     *
+     * @param flatMapper the mapper {@link Function} that takes a {@link Try} and returns the new Object
+     * @param <R>        the type of the new Object
+     * @return a new Object from the {@link Function} passed
+     */
+    public <R> R flatMap(Function<Try<T>, R> flatMapper) {
+        return Invoker.invoke(flatMapper, this);
     }
 
+    /**
+     * convert this {@link Try} instance into another Object
+     *
+     * @param successMapper the {@link Function} that will be invoked if this {@link Try} holds a
+     *                      success value
+     * @param failureMapper the {@link Function} that will be invoked if this {@link Try} holds a
+     *                      failure {@link Exception}
+     * @param <R>           the type of the new Object
+     * @return a new Object from the {@link Function} passed
+     */
     public <R> R flatMap(Function<T, R> successMapper, Function<Exception, R> failureMapper) {
         if (value != null) {
             return nonNullMapper(successMapper, value);
