@@ -1,6 +1,5 @@
 package com.functional.curry;
 
-import org.junit.Ignore;
 
 import java.util.concurrent.Callable;
 

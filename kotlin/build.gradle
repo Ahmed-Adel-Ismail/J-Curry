@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.Terebentikh'
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'io.reactivex.rxjava2:rxjava:2.1.10'
+    compile 'org.javatuples:javatuples:1.2'
+    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:1.5.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+
+buildscript {
+    ext.kotlin_version = '1.2.41'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+repositories {
+    mavenCentral()
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}

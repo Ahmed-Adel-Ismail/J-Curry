@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/J-Curry.iml" filepath="$PROJECT_DIR$/J-Curry.iml" />
       <module fileurl="file://$PROJECT_DIR$/currying/currying.iml" filepath="$PROJECT_DIR$/currying/currying.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin/kotlin.iml" filepath="$PROJECT_DIR$/kotlin/kotlin.iml" />
       <module fileurl="file://$PROJECT_DIR$/myapplication/myapplication.iml" filepath="$PROJECT_DIR$/myapplication/myapplication.iml" />
     </modules>
   </component>
