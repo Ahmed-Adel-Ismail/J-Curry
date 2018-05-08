@@ -1,5 +1,5 @@
 # J-Curry
-A library that enables Currying functions in Java (using RxJava2 interfaces), compatible with Java 7
+A library that enables Currying and Partial Application functions in Java (using RxJava2 interfaces), compatible with Java 7, also starting from Version 2.0.0, The library offers extension functions for Kotlin functions, to make currying and partial application available by default
 
 # What is Currying
 
