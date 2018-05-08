@@ -444,7 +444,7 @@ For Java :
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:currying:2.0.0'
+    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:currying:2.0.0'
 }
 ```
 
@@ -452,6 +452,6 @@ For Kotlin :
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail:J-Curry:kotlin:2.0.0'
+    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:kotlin:2.0.0'
 }
 ```
