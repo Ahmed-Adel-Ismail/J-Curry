@@ -14,3 +14,4 @@ class BiFunctionOfInts : BiFunction<Int, Int, Int> {
         return t1 + t2
     }
 }
+
