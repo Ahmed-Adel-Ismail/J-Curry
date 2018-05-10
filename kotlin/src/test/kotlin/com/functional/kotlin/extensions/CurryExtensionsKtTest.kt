@@ -19,11 +19,6 @@ class CurryExtensionsKtTest {
         assertEquals(2, result)
     }
 
-    @Test
-    fun withBiFunction() {
-        val result = BiFunctionOfInts()::apply with 1 with 1
-        assertEquals(2, result)
-    }
 
     @Test
     fun withThreeParametersFunction() {

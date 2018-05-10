@@ -13,22 +13,22 @@ This library adds extensions to Functions in kotlin so that you can apply curryi
 
 ```kotlin
 fun main(args: Array<String>) {
-    val curried = ::twoParametersFunction.with(1)
-    val result = curried(2)
+    val addOne = ::add.with(1)
+    val three = addOne(2)
 }
 
-fun twoParametersFunction(p1: Int, p2: Int): Int = p1 + p2
+fun add(p1: Int, p2: Int): Int = p1 + p2
 ```
 
 The above code is the same as :
 
 ```kotlin
 fun main(args: Array<String>) {
-    val curried = ::twoParametersFunction with 1    // infixing
-    val result = curried(2)
+    val addOne = ::add with 1    // infixing
+    val three = addOne(2)
 }
 
-fun twoParametersFunction(p1: Int, p2: Int): Int = p1 + p2
+fun add(p1: Int, p2: Int): Int = p1 + p2
 ```
 
 Partial application is supported for functions upto 4 parameters :
@@ -61,33 +61,33 @@ You can flip the order of the parameters for any functions through the <b>flip()
 
 ```kotlin
 fun main(args: Array<String>) {
-    val flipped = ::twoDifferentParametersFunction.flip()
-    flipped("--",1)
+    val concatStringWithInt = ::concatIntWithString.flip()
+    concatStringWithInt("--",1)
 }
 
-fun twoDifferentParametersFunction(p1: Int, p2: String): String = "$p1$p2"
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
 ```
 
 Flipping is used to make a function match a signature of another function parameter for example, you can also <b>flip</b> then partially apply a function in one step, which is <b>flipWith</b> :
 
 ```kotlin
 fun main(args: Array<String>) {
-    val flipped = ::twoDifferentParametersFunction.flipWith("--")
-    flipped(1)
+    val concatWithString = ::concatIntWithString.flipWith("--")
+    concatWithString(1)
 }
 
-fun twoDifferentParametersFunction(p1: Int, p2: String): String = "$p1$p2"
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
 ```
 
 which is the same as :
 
 ```kotlin
 fun main(args: Array<String>) {
-    val flipped = ::twoDifferentParametersFunction flipWith "--" // infixing
-    flipped(1)
+    val concatWithString = ::concatIntWithString flipWith "--" // infixing
+    concatWithString(1)
 }
 
-fun twoDifferentParametersFunction(p1: Int, p2: String): String = "$p1$p2"
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
 ```
 
 ## Deconstructing Tuples (Pairs and Triples) into function parameters
@@ -97,14 +97,14 @@ when having a function with two or three parameters, with there types that match
 ```kotlin
 fun main(args: Array<String>) {
     val pair = Pair(1,2)
-    val result = ::twoParametersFunction.with(pair)
+    val three = ::add.with(pair)
 
     val triple = Triple(1,2,3)
-    val resultAgain = ::threeParametersFunction.with(tuple)
+    val six = ::addAll.with(triple)
 }
 
-fun twoParametersFunction(p1: Int, p2: Int): Int = p1 + p2
-fun threeParametersFunction(p1: Int, p2: Int, p3: Int): Int = p1 + p2 + p3
+fun add(p1: Int, p2: Int): Int = p1 + p2
+fun addAll(p1: Int, p2: Int, p3: Int): Int = p1 + p2 + p3
 ```
 
 The above code is same as :
@@ -112,14 +112,14 @@ The above code is same as :
 ```kotlin
 fun main(args: Array<String>) {
     val pair = Pair(1,2)
-    val result = ::twoParametersFunction with pair          // infixing
+    val three = ::add with pair     // infixing
 
     val triple = Triple(1,2,3)
-    val resultAgain = ::threeParametersFunction with tuple  // infixing
+    val six = ::addAll with triple  // infixing
 }
 
-fun twoParametersFunction(p1: Int, p2: Int): Int = p1 + p2
-fun threeParametersFunction(p1: Int, p2: Int, p3: Int): Int = p1 + p2 + p3
+fun add(p1: Int, p2: Int): Int = p1 + p2
+fun addAll(p1: Int, p2: Int, p3: Int): Int = p1 + p2 + p3
 ```
 
 For functions with two parameters, you can flip before deconstructing the tuple through invoking <b>flipWith()</b> :
@@ -127,10 +127,10 @@ For functions with two parameters, you can flip before deconstructing the tuple 
 ```kotlin
 fun main(args: Array<String>) {
     val pair = Pair("-",1)
-    val result = ::twoDifferentParametersFunction.flipWith(pair)
+    val result = ::concatIntWithString.flipWith(pair)
 }
 
-fun twoDifferentParametersFunction(p1: Int, p2: String): String = "$p1$p2"
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
 ```
 
 the above code is the same as :
@@ -138,10 +138,64 @@ the above code is the same as :
 ```kotlin
 fun main(args: Array<String>) {
     val pair = Pair("-",1)
-    val result = ::twoDifferentParametersFunction flipWith pair  // infixing
+    val result = ::concatIntWithString flipWith pair  // infixing
 }
 
-fun twoDifferentParametersFunction(p1: Int, p2: String): String = "$p1$p2"
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
+```
+
+## Deconstructing Map.Entry into function parameters
+
+Similar to the Tuples deconstructing, when having a function with two parameters, with there types that match a Map.Entry ... so instead of passing this Map.Entry as entry.key and Entry.value, you can use the extension function that deconnstructs that Map.Entry for you :
+
+```kotlin
+fun main(args: Array<String>) {
+    val sum = mapOf(1 to 1)
+            .map { ::add.with(it) }
+            .first()
+    // sum = 2
+}
+
+fun add(p1: Int, p2: Int): Int = p1 + p2
+```
+
+The above code is same as :
+
+```kotlin
+fun main(args: Array<String>) {
+    val sum = mapOf(1 to 1)
+            .map { entry -> ::add with entry } // infixing
+            .first()
+    // sum = 2
+}
+
+fun add(p1: Int, p2: Int): Int = p1 + p2
+```
+
+you also can flip before deconstructing the Map.Entry through invoking <b>flipWith()</b> :
+
+```kotlin
+fun main(args: Array<String>) {
+    val sum = mapOf("-" to 1)
+            .map { entry -> ::concatIntWithString.with(entry) }
+            .first()
+    // sum = 2
+}
+
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
+```
+
+the above code is the same as :
+
+```kotlin
+fun main(args: Array<String>) {
+    val sum = mapOf("-" to 1)
+            .map { entry -> ::concatIntWithString with entry } // infixing
+            .first()
+    // sum = 2
+}
+
+fun concatIntWithString(p1: Int, p2: String): String = "$p1$p2"
 ```
 
 ## Notes
@@ -150,15 +204,15 @@ Note that most of the extension functions in this library are infixed, which you
 
 ```kotlin
 fun main(args: Array<String>) {
-    val resultOne = ::fourParametersFunction with 1 with 2 with 3 with 4
+    val ten = ::addAll with 1 with 2 with 3 with 4
 
     //also the same code can be :
 
-    val curried = ::fourParametersFunction with 1 with 2 with 3
-    val resultTwo = curried(4)
+    val addSix = ::addAll with 1 with 2 with 3
+    val anotherTen = addSix(4)
 }
 
-fun fourParametersFunction(p1: Int, p2: Int, p3: Int, p4: Int): Int = p1 + p2 + p3 + p4
+fun addAll(p1: Int, p2: Int, p3: Int, p4: Int): Int = p1 + p2 + p3 + p4
 ```
 
 
@@ -444,7 +498,7 @@ For Java :
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:currying:2.0.0'
+    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:currying:2.0.1'
 }
 ```
 
@@ -452,6 +506,6 @@ For Kotlin :
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:kotlin:2.0.0'
+    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:kotlin:2.0.1'
 }
 ```
