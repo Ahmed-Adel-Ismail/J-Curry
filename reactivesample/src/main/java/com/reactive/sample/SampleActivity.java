@@ -21,7 +21,7 @@ public class SampleActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        new MainTest().run();
     }
 
 

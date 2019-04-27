@@ -39,6 +39,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation project(path: ':reactive')
-//    implementation 'com.github.Ahmed-Adel-Ismail.J-Curry:reactive:feature~supporting-java-8-SNAPSHOT'
+//    implementation project(path: ':reactive')
+    implementation 'com.github.Ahmed-Adel-Ismail.J-Curry:reactive:3.0.0'
 }
