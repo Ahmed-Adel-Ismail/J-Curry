@@ -1,7 +1,7 @@
 package com.functional.types;
 
 
-import com.functional.curry.Functions;
+import com.functional.reactive.Functions;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;

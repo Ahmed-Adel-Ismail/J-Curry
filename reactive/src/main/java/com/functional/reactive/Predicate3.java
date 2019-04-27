@@ -1,4 +1,4 @@
-package com.functional.curry;
+package com.functional.reactive;
 
 public interface Predicate3<T1, T2, T3> {
 

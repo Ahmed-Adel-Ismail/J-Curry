@@ -1,4 +1,4 @@
-package com.functional.curry;
+package com.functional.reactive;
 
 
 import java.util.concurrent.Callable;

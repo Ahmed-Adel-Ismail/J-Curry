@@ -2,7 +2,7 @@ package com.functional.types;
 
 
 
-import com.functional.curry.Functions;
+import com.functional.reactive.Functions;
 
 import java.util.Arrays;
 import java.util.Comparator;

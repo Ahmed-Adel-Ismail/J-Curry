@@ -1,4 +1,4 @@
-package com.functional.curry;
+package com.functional.reactive;
 
 import io.reactivex.Maybe;
 import io.reactivex.functions.Function;

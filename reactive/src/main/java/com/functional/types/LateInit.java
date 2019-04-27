@@ -1,7 +1,7 @@
 package com.functional.types;
 
 
-import com.functional.curry.RxCallable;
+import com.functional.reactive.RxCallable;
 
 import java.util.NoSuchElementException;
 

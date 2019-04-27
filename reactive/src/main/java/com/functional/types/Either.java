@@ -1,8 +1,8 @@
 package com.functional.types;
 
 
-import com.functional.curry.CallableStream;
-import com.functional.curry.LazyCallable;
+import com.functional.reactive.CallableStream;
+import com.functional.reactive.LazyCallable;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;

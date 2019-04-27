@@ -1,8 +1,8 @@
 package com.functional.types;
 
 
-import com.functional.curry.Functions;
-import com.functional.curry.RxCallable;
+import com.functional.reactive.Functions;
+import com.functional.reactive.RxCallable;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiPredicate;
