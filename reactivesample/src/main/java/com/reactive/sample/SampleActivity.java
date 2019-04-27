@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.functional.reactive.Functions;
 import com.functional.reactive.RxAction;
+import com.functional.reactive.RxCallable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
