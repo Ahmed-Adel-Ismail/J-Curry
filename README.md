@@ -218,6 +218,7 @@ fun addAll(p1: Int, p2: Int, p3: Int, p4: Int): Int = p1 + p2 + p3 + p4
 
 # J-Curry for Java
 
+## In Java 6,7 version of the library: 
 ## Curry.toConsumer(), Curry.toFunction(), Curry.toBiFunction(), Curry.toPredicate(), Curry.toAction(), Curry.toCallable()
 
 it is possible to Curry any method through one of 2 ways, the first is to put this method in one of the RxJava2 functional interfaces like a Consumer.java, or Function.java, etc..., or through passing it's "method reference" as there first parameter, for Android this requires adding Retrolambda
@@ -478,6 +479,70 @@ void castInteger(Object intValue) {
 
 ```
 
+## In Java 8 version of the library :
+
+## Since Version 3.0.0, There are set of functional interfaces that use the Java 8 features, providing set of default methods that helps in converting the implementers of the interfaces into RxJava streams, or adding multiple ways to interact with those implementers, also there are more types like <i>Lazy.java, LateInit.Java</i>, etc...
+
+## Instead of using the Curry.java in older versions, we use Functions.java to be able to use Java 8 interfaces
+
+```java
+// implementing the new interfaces :
+
+void run() {
+    new RandomGenerator()
+        .compose(() -> doSomethingBeforeInvokingCall()) // default method
+        .andThen( callResult -> doSomethingAfterInvokingCall(callResult)) // default method
+        .tryToCall() // default method that encapsulates the call() result in an Either Object
+        .fold(successValue -> doSomethingWithReturnedValue(successValue))
+        .onError(thrownException -> doSomethingWithException(thrownException))
+}
+
+
+class RandomGenerator implements RxCallable<Integer> {
+    @Override
+    public Integer call() {
+        return (int) Math.random();
+    }
+}
+
+
+// RxCallable is one of many interfaces that are available, like RxJava functional interfaces, every type has an alternative version in this library, like RxFunction, RxConsumer, RxPredicate, and so on
+
+// if we want to convert any method to an implementer to those interfaces, we can use Functions.java class, 
+// for example :
+
+class Main{
+
+    void run() {
+        Functions.asRxCallable(this::randomGenerator)  // converts a normal method to RxCallable
+            .compose(() -> doSomethingBeforeInvokingCall()) // default method
+            .andThen( callResult -> doSomethingAfterInvokingCall(callResult)) // default method
+            .tryToCall() // default method that encapsulates the call() result in an Either Object
+            .fold(successValue -> doSomethingWithReturnedValue(successValue))
+            .onError(thrownException -> doSomethingWithException(thrownException))
+    }
+
+
+    int randomGenerator() {
+        return (int) Math.random();
+    }
+
+}
+
+// also RxCallable and RxAction has the ability to convert the value into an RxJava stream, like for example :
+
+void run() {
+    Functions.asRxCallable(this::randomGenerator)  
+        .toSingle() // convert to RxJava stream
+        .map(String::valueOf) // rx java operator
+        .subscribe()
+}
+
+```
+
+You can discover the available features for the Java 8 support through the <b>Functions</b> class, or by implementing interfaces with prefix Rx.. (like RxFunction, RxCallable, RxAction, etc...), and as long as you start using those classes, all there APIs with all there options will be available from the class that you are using
+
+
 
 # Adding gradle dependency
 
@@ -494,18 +559,17 @@ allprojects {
   
 Step 2. Add the dependency
 
-For Java :
 
 ```gradle
 dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:currying:2.0.1'
-}
-```
-
-For Kotlin :
-
-```gradle
-dependencies {
-    compile 'com.github.Ahmed-Adel-Ismail.J-Curry:kotlin:2.0.1'
+    
+    // Java 6 or 7 :
+    implementation 'com.github.Ahmed-Adel-Ismail.J-Curry:currying:3.0.0'
+    
+    // Java 8 and reactive streams:
+    implementation 'com.github.Ahmed-Adel-Ismail.J-Curry:reactive:3.0.0'
+    
+    // Kotlin :
+    implementation 'com.github.Ahmed-Adel-Ismail.J-Curry:kotlin:3.0.0'
 }
 ```
