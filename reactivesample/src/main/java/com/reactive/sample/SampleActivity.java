@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.functional.curry.Functions;
-import com.functional.curry.RxAction;
-import com.functional.curry.RxCallable;
+
+import com.functional.reactive.Functions;
+import com.functional.reactive.RxAction;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
