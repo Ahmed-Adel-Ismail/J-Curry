@@ -1,1 +1,1 @@
-include ':currying', ':myapplication', ':kotlin'
+include ':currying', ':myapplication', ':kotlin', ':reactive', ':reactivesample'
