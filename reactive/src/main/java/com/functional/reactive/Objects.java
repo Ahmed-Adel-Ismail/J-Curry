@@ -1,7 +1,6 @@
 package com.functional.reactive;
 
 
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.Callable;
@@ -293,5 +292,22 @@ public class Objects {
             Functions.invokeConsumer(onNonNullAction, obj);
         }
     }
+
+    public static <T> T requireNonNull(T obj, T defaultValue) throws RuntimeException {
+        if (obj != null) return obj;
+        return defaultValue;
+    }
+
+    public static Either<String> isNullOrEmpty(String value) {
+        if (value == null || value.trim().isEmpty()) return Either.left(new NullPointerException());
+        return Either.right(value);
+    }
+
+    public static String requireNonNullString(String value, String defaultIfNullOrEmpty) {
+        if (value != null && !value.trim().isEmpty()) return value;
+        return defaultIfNullOrEmpty;
+    }
+
+
 }
 

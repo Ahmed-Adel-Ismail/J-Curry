@@ -3,6 +3,7 @@ package com.functional.reactive;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * a type that holds one value, either a success value (right), or a failure/exception value (left)
@@ -22,6 +23,11 @@ public abstract class Either<T> implements CallableStream<T>, LazyCallable<T> {
     public TryCatch fold(@NonNull Consumer<T> onSuccess) throws NullPointerException {
         if (onSuccess == null) throw new NullPointerException();
         return TryCatch.with(() -> onSuccess.accept(call()));
+    }
+
+    public <R> TryCatchReturn<R> map(@NonNull Function<T,R> onSuccess) throws NullPointerException {
+        if (onSuccess == null) throw new NullPointerException();
+        return new TryCatchReturn<>(() -> onSuccess.apply(call()));
     }
 
     static class Right<T> extends Either<T> {
