@@ -1,8 +1,6 @@
 package com.functional.reactive;
 
 
-import com.functional.types.Lazy;
-
 import java.util.concurrent.Callable;
 
 public interface LazyCallable<T> extends Callable<T> {

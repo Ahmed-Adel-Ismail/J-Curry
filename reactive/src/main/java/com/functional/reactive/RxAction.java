@@ -1,8 +1,5 @@
 package com.functional.reactive;
 
-import com.functional.types.Objects;
-import com.functional.types.TryCatch;
-
 import io.reactivex.functions.Action;
 
 /**

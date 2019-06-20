@@ -1,8 +1,5 @@
-package com.functional.types;
+package com.functional.reactive;
 
-
-import com.functional.reactive.CallableStream;
-import com.functional.reactive.Functions;
 
 import java.util.concurrent.Callable;
 

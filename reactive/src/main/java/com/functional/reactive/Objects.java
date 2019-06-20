@@ -1,8 +1,6 @@
-package com.functional.types;
+package com.functional.reactive;
 
 
-
-import com.functional.reactive.Functions;
 
 import java.util.Arrays;
 import java.util.Comparator;

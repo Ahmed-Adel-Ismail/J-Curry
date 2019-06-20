@@ -1,7 +1,5 @@
-package com.functional.types;
+package com.functional.reactive;
 
-
-import com.functional.reactive.Functions;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;

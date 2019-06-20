@@ -1,8 +1,6 @@
 package com.functional.reactive;
 
 
-import com.functional.types.Objects;
-
 import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Function;

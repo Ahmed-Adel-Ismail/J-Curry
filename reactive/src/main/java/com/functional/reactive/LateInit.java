@@ -1,4 +1,4 @@
-package com.functional.types;
+package com.functional.reactive;
 
 
 import com.functional.reactive.RxCallable;
@@ -21,7 +21,7 @@ public class LateInit<T> implements RxCallable<T> {
 
     public void initialize(@NonNull T value) throws NullPointerException, IllegalArgumentException {
         if (value == null) throw new NullPointerException();
-        if (initialized) throw new IllegalArgumentException("value already initialized");
+        if (initialized) return;
         this.value = value;
         this.initialized = true;
     }
